@@ -1,0 +1,196 @@
+import 'package:flutter/material.dart';
+import 'package:parknet_pro/custome_widget/custome_textformfiled.dart';
+import 'package:parknet_pro/custome_widget/ouline_and_greenbutton.dart';
+import 'package:parknet_pro/utils/app_assets.dart';
+import 'package:parknet_pro/utils/app_colors.dart';
+import 'package:parknet_pro/utils/app_textstyle.dart';
+
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
+
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final TextEditingController emailcontroller = TextEditingController();
+  final TextEditingController passwordcontroller = TextEditingController();
+  bool isRememberMe = false;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        title: const Text("Sign In", style: AppTextStyles.appBarTitle),
+        centerTitle: true,
+        leading: const Icon(Icons.arrow_back, color: AppColors.black),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight:
+                size.height -
+                kToolbarHeight -
+                MediaQuery.of(context).padding.top,
+          ),
+          child: IntrinsicHeight(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 50),
+                  const Text("Email Address", style: AppTextStyles.boldText),
+                  const SizedBox(height: 10),
+                  CustomTextformfield(
+                    hintText: "Enter your email address",
+                    controller: emailcontroller,
+                    obscureText: false,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      if (!RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      ).hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  const Text("Password", style: AppTextStyles.boldText),
+                  const SizedBox(height: 10),
+                  CustomTextformfield(
+                    hintText: "Enter your password",
+                    controller: passwordcontroller,
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      if (value.length < 6) {
+                        return 'Password must be at least 6 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Radio<bool>(
+                            value: true,
+                            groupValue: isRememberMe,
+                            onChanged: (value) {
+                              setState(() {
+                                isRememberMe = value!;
+                              });
+                            },
+                            activeColor: AppColors.green,
+                          ),
+                          Text("Remember Me", style: AppTextStyles.normalText),
+                        ],
+                      ),
+                      Text(
+                        "Forgot Password",
+                        style: TextStyle(
+                          color: AppColors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  GreenButton(
+                    text: 'Sign In',
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Login Successful!'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please fix the errors above'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: const [
+                      Expanded(
+                        child: Divider(color: Colors.grey, thickness: 1),
+                      ),
+                      SizedBox(width: 10),
+                      Text("Or continue with", style: AppTextStyles.normalText),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Divider(color: Colors.grey, thickness: 1),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  BorderButton(
+                    text: "Continue with Google",
+                    image: Image.asset(
+                      AppAssets.googleIcon,
+                      width: 24,
+                      height: 24,
+                    ),
+                    onPressed: () {
+                      // Add Google Sign-In logic here
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  BorderButton(
+                    text: "Continue with Facebook",
+                    image: Image.asset(
+                      AppAssets.facebookIcon,
+                      width: 24,
+                      height: 24,
+                    ),
+                    onPressed: () {},
+                  ),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Don't have an account? ",
+                        style: AppTextStyles.normalText,
+                        children: [
+                          TextSpan(
+                            text: "Sign Up",
+                            style: const TextStyle(
+                              color: AppColors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
