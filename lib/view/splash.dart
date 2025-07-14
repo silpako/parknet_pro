@@ -42,7 +42,7 @@ class SplashScreen extends GetView<SplashController> {
                   "Find & manage your parking with ease.\nSmart. Simple. Reliable.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.grey,
+                    color: AppColors.grey,
                     fontSize: 16,
                     height: 1.4,
                   ),
