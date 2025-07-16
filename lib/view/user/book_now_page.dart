@@ -5,14 +5,32 @@ import 'package:parknet_pro/controller/booking_controller.dart';
 import 'package:parknet_pro/utils/app_assets.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 
-class BookNowPage extends StatelessWidget {
-  BookNowPage({super.key});
+class BookNowPage extends StatefulWidget {
+  const BookNowPage({super.key});
 
+  @override
+  State<BookNowPage> createState() => _BookNowPageState();
+}
+
+class _BookNowPageState extends State<BookNowPage> {
   final BookingController bookingController = Get.find<BookingController>();
+  late TextEditingController vehicleController;
+
+  @override
+  void initState() {
+    super.initState();
+    bookingController.resetDays();
+    vehicleController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    vehicleController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    bookingController.resetDays();
     return Scaffold(
       backgroundColor: AppColors.lightPurple,
       appBar: AppBar(
@@ -23,11 +41,11 @@ class BookNowPage extends StatelessWidget {
         ),
         leading: GestureDetector(
           onTap: () => Get.back(),
-          child: Icon(Icons.arrow_back_rounded, color: AppColors.white),
+          child: const Icon(Icons.arrow_back_rounded, color: Colors.white),
         ),
         title: const Text(
           "Book Now",
-          style: TextStyle(color: AppColors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -37,6 +55,7 @@ class BookNowPage extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
+              // 🖼️ Parking Image
               Container(
                 height: 220,
                 width: double.infinity,
@@ -61,7 +80,7 @@ class BookNowPage extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // Booking Info Placeholder
+              // 📍 Parking Details
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -95,6 +114,7 @@ class BookNowPage extends StatelessWidget {
 
               const SizedBox(height: 10),
 
+              // 📅 Booking Form
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -114,7 +134,7 @@ class BookNowPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
 
-                    // Date Picker Section
+                    // 📆 Date Picker
                     Obx(() {
                       return GestureDetector(
                         onTap: () => bookingController.pickDate(context),
@@ -150,7 +170,7 @@ class BookNowPage extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // Days Counter Section
+                    // 🔢 Days Counter
                     Obx(() {
                       return Row(
                         children: [
@@ -162,20 +182,9 @@ class BookNowPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          Container(
-                            height: 32,
-                            width: 32,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.blueAccent),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: const Icon(Icons.remove, size: 18),
-                              onPressed: () {
-                                bookingController.decreaseDays();
-                              },
-                            ),
+                          buildCounterButton(
+                            Icons.remove,
+                            bookingController.decreaseDays,
                           ),
                           const SizedBox(width: 10),
                           Text(
@@ -183,27 +192,32 @@ class BookNowPage extends StatelessWidget {
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(width: 10),
-                          Container(
-                            height: 32,
-                            width: 32,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.blueAccent),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: const Icon(Icons.add, size: 18),
-                              onPressed: () {
-                                bookingController.increaseDays();
-                              },
-                            ),
+                          buildCounterButton(
+                            Icons.add,
+                            bookingController.increaseDays,
                           ),
                         ],
                       );
                     }),
 
+                    const SizedBox(height: 20),
+
+                    // 🚘 Vehicle Number Input
+                    TextField(
+                      controller: vehicleController,
+                      decoration: InputDecoration(
+                        labelText: 'Vehicle Number (e.g., KL-07-AB-1234)',
+                        prefixIcon: const Icon(Icons.directions_car),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // 💰 Price Info
                     Container(
-                      margin: const EdgeInsets.only(top: 12),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.orange.shade50,
@@ -218,7 +232,6 @@ class BookNowPage extends StatelessWidget {
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
-                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -236,7 +249,7 @@ class BookNowPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Book Button
+              // ✅ Confirm Booking
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -248,7 +261,17 @@ class BookNowPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    // Perform booking logic
+                    final vehicleNumber = vehicleController.text.trim();
+                    if (vehicleNumber.isEmpty) {
+                      Get.snackbar(
+                        "Error",
+                        "Please enter vehicle number",
+                        backgroundColor: Colors.red.shade100,
+                      );
+                      return;
+                    }
+
+                    // TODO: Add booking logic here
                   },
                   child: const Text(
                     "Confirm Booking",
@@ -263,6 +286,22 @@ class BookNowPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildCounterButton(IconData icon, VoidCallback onPressed) {
+    return Container(
+      height: 32,
+      width: 32,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blueAccent),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        icon: Icon(icon, size: 18),
+        onPressed: onPressed,
       ),
     );
   }
