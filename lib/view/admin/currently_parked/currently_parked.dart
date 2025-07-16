@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
+import 'package:parknet_pro/view/admin/currently_parked/single_currently_parked_tile.dart';
 
 class CurrentlyParked extends StatelessWidget {
   const CurrentlyParked({super.key});
@@ -17,13 +18,24 @@ class CurrentlyParked extends StatelessWidget {
         ),
         leading: GestureDetector(
           onTap: () => Get.back(),
-          child: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+          child: const Icon(Icons.arrow_back_rounded, color: AppColors.white),
         ),
         title: const Text(
           "Currently Parked",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+      ),
+
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            SingleCurrentlyParkedTile(),
+            SingleCurrentlyParkedTile(),
+          ],
+        ),
       ),
     );
   }
