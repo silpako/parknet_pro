@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parknet_pro/custome_widget/logout_popup.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 import 'package:parknet_pro/view/user/single_card.dart';
 
@@ -40,7 +41,7 @@ class _UserHomepageState extends State<UserHomepage> {
             ),
             InkWell(
               onTap: () {
-                // showLogoutDialog(context);
+                showLogoutDialog(context);
               },
               child: const Icon(Icons.person_add_alt, color: AppColors.white),
             ),

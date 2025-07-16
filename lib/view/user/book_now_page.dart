@@ -27,7 +27,7 @@ class BookNowPage extends StatelessWidget {
         ),
         title: const Text(
           "Book Now",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),

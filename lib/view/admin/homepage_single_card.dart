@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 
 class HomepageSingleCard extends StatelessWidget {
@@ -6,6 +7,7 @@ class HomepageSingleCard extends StatelessWidget {
   final String cardText;
   final int count;
   final bool isLoading;
+  final Widget Function()? classBuilder;
 
   const HomepageSingleCard({
     super.key,
@@ -13,13 +15,16 @@ class HomepageSingleCard extends StatelessWidget {
     required this.cardText,
     required this.count,
     this.isLoading = false,
+    this.classBuilder,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print("haii");
+        if (classBuilder != null) {
+          Get.to(classBuilder!);
+        }
       },
       child: Card(
         color: AppColors.white,

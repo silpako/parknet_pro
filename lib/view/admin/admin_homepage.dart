@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:parknet_pro/custome_widget/logout_popup.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 import 'package:parknet_pro/view/admin/homepage_single_card.dart';
+import 'package:parknet_pro/view/admin/parking_main.dart';
 
 class AdminHomepage extends StatefulWidget {
   const AdminHomepage({super.key});
@@ -40,7 +42,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
             ),
             InkWell(
               onTap: () {
-                // showLogoutDialog(context);
+                showLogoutDialog(context);
               },
               child: const Icon(Icons.person_add_alt, color: AppColors.white),
             ),
@@ -71,6 +73,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                     cardIcon: Icons.local_parking_outlined,
                     cardText: "Total Parkings",
                     count: 12,
+                    classBuilder: () => ParkingMain(),
                   ),
                   HomepageSingleCard(
                     cardIcon: Icons.directions_car,
