@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
-import 'package:parknet_pro/view/user/single_card.dart';
+import 'package:parknet_pro/view/admin/homepage_single_card.dart';
 
-class UserHomepage extends StatefulWidget {
-  const UserHomepage({super.key});
+class AdminHomepage extends StatefulWidget {
+  const AdminHomepage({super.key});
 
   @override
-  State<UserHomepage> createState() => _UserHomepageState();
+  State<AdminHomepage> createState() => _AdminHomepageState();
 }
 
-class _UserHomepageState extends State<UserHomepage> {
+class _AdminHomepageState extends State<AdminHomepage> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -30,7 +30,7 @@ class _UserHomepageState extends State<UserHomepage> {
             SizedBox(width: screenWidth * 0.03),
             Expanded(
               child: Text(
-                "welcome User",
+                "welcome Admin",
                 style: TextStyle(
                   color: AppColors.white,
                   fontSize: screenWidth * 0.05,
@@ -62,10 +62,44 @@ class _UserHomepageState extends State<UserHomepage> {
               ),
             ),
             SizedBox(height: screenHeight * 0.025),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  HomepageSingleCard(
+                    cardIcon: Icons.local_parking_outlined,
+                    cardText: "Total Parkings",
+                    count: 12,
+                  ),
+                  HomepageSingleCard(
+                    cardIcon: Icons.directions_car,
+                    cardText: "Currently Parked",
+                    count: 15,
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: screenHeight * 0.025),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: SingleCard(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  HomepageSingleCard(
+                    cardIcon: Icons.account_balance_wallet,
+                    cardText: "Total Revenue",
+                    count: 12,
+                  ),
+                  HomepageSingleCard(
+                    cardIcon: Icons.cancel,
+                    cardText: "Cancelled Bookings",
+                    count: 15,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

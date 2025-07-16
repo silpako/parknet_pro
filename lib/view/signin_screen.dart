@@ -5,6 +5,7 @@ import 'package:parknet_pro/custome_widget/ouline_and_greenbutton.dart';
 import 'package:parknet_pro/utils/app_assets.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 import 'package:parknet_pro/utils/app_textstyle.dart';
+import 'package:parknet_pro/view/admin/admin_homepage.dart';
 import 'package:parknet_pro/view/user/user_homepage.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -129,7 +130,13 @@ class _SignInScreenState extends State<SignInScreen> {
                       //     ),
                       //   );
                       // }
-                      Get.offAll(() => UserHomepage());
+
+                      if (emailcontroller.text == "admin@gmail.com" &&
+                          passwordcontroller.text == "12345") {
+                        Get.offAll(() => AdminHomepage());
+                      } else {
+                        Get.offAll(() => UserHomepage());
+                      }
                     },
                   ),
                   const SizedBox(height: 20),
