@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parknet_pro/controller/booking_controller.dart';
 import 'package:parknet_pro/controller/splash_controller.dart';
 import 'package:parknet_pro/view/splash.dart';
 
 void main() {
   Get.lazyPut(() => SplashController());
+  Get.put(BookingController());
   runApp(const MyApp());
 }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:parknet_pro/utils/app_assets.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
+import 'package:parknet_pro/view/user/book_now_page.dart';
 
 class SingleCard extends StatelessWidget {
   const SingleCard({super.key});
@@ -113,20 +115,25 @@ class SingleCard extends StatelessWidget {
                     Text("Rs. 50", style: TextStyle(fontSize: 14)),
                   ],
                 ),
-                Container(
-                  height: 44,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: AppColors.red,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Book Now",
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => BookNowPage());
+                  },
+                  child: Container(
+                    height: 44,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      color: AppColors.red,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Book Now",
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),
