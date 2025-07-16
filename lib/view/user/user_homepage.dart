@@ -18,7 +18,7 @@ class _UserHomepageState extends State<UserHomepage> {
       backgroundColor: AppColors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: AppColors.red,
+        backgroundColor: AppColors.primaryColor,
         toolbarHeight: screenHeight * 0.10,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -54,7 +54,7 @@ class _UserHomepageState extends State<UserHomepage> {
               height: screenHeight * 0.03,
               width: screenWidth * screenWidth,
               decoration: const BoxDecoration(
-                color: AppColors.red,
+                color: AppColors.primaryColor,
                 borderRadius: BorderRadiusDirectional.only(
                   bottomStart: Radius.circular(40),
                   bottomEnd: Radius.circular(40),

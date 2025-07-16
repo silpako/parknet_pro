@@ -16,7 +16,7 @@ class BookNowPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.lightPurple,
       appBar: AppBar(
-        backgroundColor: AppColors.red,
+        backgroundColor: AppColors.primaryColor,
         elevation: 4,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
@@ -242,7 +242,7 @@ class BookNowPage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.red,
+                    backgroundColor: AppColors.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

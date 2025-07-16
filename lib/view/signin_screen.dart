@@ -96,7 +96,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 isRememberMe = value!;
                               });
                             },
-                            activeColor: AppColors.green,
+                            activeColor: AppColors.primaryColor,
                           ),
                           Text("Remember Me", style: AppTextStyles.normalText),
                         ],
@@ -136,13 +136,13 @@ class _SignInScreenState extends State<SignInScreen> {
                   Row(
                     children: const [
                       Expanded(
-                        child: Divider(color: Colors.grey, thickness: 1),
+                        child: Divider(color: AppColors.grey, thickness: 1),
                       ),
                       SizedBox(width: 10),
                       Text("Or continue with", style: AppTextStyles.normalText),
                       SizedBox(width: 10),
                       Expanded(
-                        child: Divider(color: Colors.grey, thickness: 1),
+                        child: Divider(color: AppColors.grey, thickness: 1),
                       ),
                     ],
                   ),
@@ -178,7 +178,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           TextSpan(
                             text: "Sign Up",
                             style: const TextStyle(
-                              color: AppColors.green,
+                              color: AppColors.primaryColor,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

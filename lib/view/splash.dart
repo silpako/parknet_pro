@@ -31,7 +31,7 @@ class SplashScreen extends GetView<SplashController> {
                 const Text(
                   "ParkNet Pro",
                   style: TextStyle(
-                    color: AppColors.red,
+                    color: AppColors.primaryColor,
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,

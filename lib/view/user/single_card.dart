@@ -123,7 +123,7 @@ class SingleCard extends StatelessWidget {
                     height: 44,
                     width: 150,
                     decoration: BoxDecoration(
-                      color: AppColors.red,
+                      color: AppColors.primaryColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Center(

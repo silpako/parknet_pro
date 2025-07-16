@@ -12,8 +12,8 @@ class GreenButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.primaryColor,
+        foregroundColor: AppColors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         minimumSize: const Size.fromHeight(50),
