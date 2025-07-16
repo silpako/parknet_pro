@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:parknet_pro/custome_widget/custome_textformfiled.dart';
 import 'package:parknet_pro/custome_widget/ouline_and_greenbutton.dart';
 import 'package:parknet_pro/utils/app_assets.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 import 'package:parknet_pro/utils/app_textstyle.dart';
+import 'package:parknet_pro/view/user/user_homepage.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -28,7 +30,6 @@ class _SignInScreenState extends State<SignInScreen> {
         backgroundColor: AppColors.white,
         title: const Text("Sign In", style: AppTextStyles.appBarTitle),
         centerTitle: true,
-        leading: const Icon(Icons.arrow_back, color: AppColors.black),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -113,21 +114,22 @@ class _SignInScreenState extends State<SignInScreen> {
                   GreenButton(
                     text: 'Sign In',
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Login Successful!'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Please fix the errors above'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
+                      // if (_formKey.currentState!.validate()) {
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     const SnackBar(
+                      //       content: Text('Login Successful!'),
+                      //       backgroundColor: Colors.green,
+                      //     ),
+                      //   );
+                      // } else {
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     const SnackBar(
+                      //       content: Text('Please fix the errors above'),
+                      //       backgroundColor: Colors.red,
+                      //     ),
+                      //   );
+                      // }
+                      Get.offAll(() => UserHomepage());
                     },
                   ),
                   const SizedBox(height: 20),
