@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:parknet_pro/custome_widget/logout_popup.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
+import 'package:parknet_pro/view/admin/currently_parked/currently_parked.dart';
 import 'package:parknet_pro/view/admin/homepage_single_card.dart';
-import 'package:parknet_pro/view/admin/parking_main.dart';
+import 'package:parknet_pro/view/admin/parkings/parking_main.dart';
 
 class AdminHomepage extends StatefulWidget {
   const AdminHomepage({super.key});
@@ -79,6 +80,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                     cardIcon: Icons.directions_car,
                     cardText: "Currently Parked",
                     count: 15,
+                    classBuilder: () => CurrentlyParked(),
                   ),
                 ],
               ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
-import 'package:parknet_pro/view/admin/new_parking.dart';
-import 'package:parknet_pro/view/admin/single_parking_card.dart';
+import 'package:parknet_pro/view/admin/parkings/new_parking.dart';
+import 'package:parknet_pro/view/admin/parkings/single_parking_card.dart';
 
 class ParkingMain extends StatelessWidget {
   const ParkingMain({super.key});
