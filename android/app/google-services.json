@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "222670100529",
+    "project_id": "parkingsystem-c415d",
+    "storage_bucket": "parkingsystem-c415d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222670100529:android:d115f8a8c15de74baddd10",
+        "android_client_info": {
+          "package_name": "com.example.parknet_pro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuVo_VviNdd9l07vV8Hm5TgTvshlz-C-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

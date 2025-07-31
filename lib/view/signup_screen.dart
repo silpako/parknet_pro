@@ -4,25 +4,25 @@ import 'package:get/get.dart';
 import 'package:parknet_pro/custome_widget/custome_textformfiled.dart';
 import 'package:parknet_pro/custome_widget/ouline_and_greenbutton.dart';
 import 'package:parknet_pro/firebase/firebase_function.dart';
-import 'package:parknet_pro/utils/app_assets.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 import 'package:parknet_pro/utils/app_textstyle.dart';
-import 'package:parknet_pro/view/admin/admin_homepage.dart';
-import 'package:parknet_pro/view/signup_screen.dart';
-import 'package:parknet_pro/view/user/user_homepage.dart';
+import 'package:parknet_pro/view/signin_screen.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
-  final TextEditingController emailcontroller = TextEditingController();
-  final TextEditingController passwordcontroller = TextEditingController();
-  bool isRememberMe = false;
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool isTermsAccepted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class _SignInScreenState extends State<SignInScreen> {
       backgroundColor: AppColors.white,
       appBar: AppBar(
         backgroundColor: AppColors.white,
-        title: const Text("Sign In", style: AppTextStyles.appBarTitle),
+        title: const Text("Sign Up", style: AppTextStyles.appBarTitle),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -51,11 +51,29 @@ class _SignInScreenState extends State<SignInScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 50),
+                  const Text("Name", style: AppTextStyles.boldText),
+                  const SizedBox(height: 10),
+                  CustomTextformfield(
+                    hintText: "Enter your full name",
+                    controller: nameController,
+                    obscureText: false,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      if (value.length < 3) {
+                        return 'Name must be at least 3 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+
                   const Text("Email Address", style: AppTextStyles.boldText),
                   const SizedBox(height: 10),
                   CustomTextformfield(
                     hintText: "Enter your email address",
-                    controller: emailcontroller,
+                    controller: emailController,
                     obscureText: false,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -70,11 +88,12 @@ class _SignInScreenState extends State<SignInScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
+
                   const Text("Password", style: AppTextStyles.boldText),
                   const SizedBox(height: 10),
                   CustomTextformfield(
                     hintText: "Enter your password",
-                    controller: passwordcontroller,
+                    controller: passwordController,
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -86,47 +105,76 @@ class _SignInScreenState extends State<SignInScreen> {
                       return null;
                     },
                   ),
+                  const SizedBox(height: 20),
+
+                  const Text("Confirm Password", style: AppTextStyles.boldText),
+                  const SizedBox(height: 10),
+                  CustomTextformfield(
+                    hintText: "Re-enter your password",
+                    controller: confirmPasswordController,
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please confirm your password';
+                      }
+                      if (value != passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
+
                   const SizedBox(height: 10),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Radio<bool>(
-                            value: true,
-                            groupValue: isRememberMe,
-                            onChanged: (value) {
-                              setState(() {
-                                isRememberMe = value!;
-                              });
-                            },
-                            activeColor: AppColors.primaryColor,
-                          ),
-                          Text("Remember Me", style: AppTextStyles.normalText),
-                        ],
+                      Checkbox(
+                        value: isTermsAccepted,
+                        activeColor: AppColors.primaryColor,
+                        onChanged: (value) {
+                          setState(() {
+                            isTermsAccepted = value!;
+                          });
+                        },
                       ),
-                      Text(
-                        "Forgot Password",
-                        style: TextStyle(
-                          color: AppColors.red,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(
+                          "I accept the Terms & Conditions",
+                          style: AppTextStyles.normalText,
                         ),
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 30),
                   GreenButton(
-                    text: 'Sign In',
+                    text: 'Sign Up',
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        if (!isTermsAccepted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Please accept the Terms & Conditions',
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
+
+                        String name = nameController.text.trim();
+                        String email = emailController.text.trim();
+                        String pass = passwordController.text.trim();
+
                         FirebaseFunctions()
-                            .loginUser(
-                              emaill: emailcontroller.text.trim(),
-                              password: passwordcontroller.text.trim(),
+                            .registerUser(
+                              name: name,
+                              email: email,
+                              password: pass,
                             )
                             .then((response) {
                               if (response == null) {
-                                Get.offAll(() => UserHomepage());
+                                Get.to(() => const SignInScreen());
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text(response)),
@@ -134,72 +182,18 @@ class _SignInScreenState extends State<SignInScreen> {
                               }
                             });
                       }
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     const SnackBar(
-                      //       content: Text('Login Successful!'),
-                      //       backgroundColor: Colors.green,
-                      //     ),
-                      //   );
-                      // } else {
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     const SnackBar(
-                      //       content: Text('Please fix the errors above'),
-                      //       backgroundColor: Colors.red,
-                      //     ),
-                      //   );
-                      // if (emailcontroller.text == "admin@gmail.com" &&
-                      //     passwordcontroller.text == "12345") {
-                      //   Get.offAll(() => AdminHomepage());
-                      // } else {
-                      //   Get.offAll(() => UserHomepage());
-                      // }
                     },
                   ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: const [
-                      Expanded(
-                        child: Divider(color: AppColors.grey, thickness: 1),
-                      ),
-                      SizedBox(width: 10),
-                      Text("Or continue with", style: AppTextStyles.normalText),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Divider(color: AppColors.grey, thickness: 1),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  BorderButton(
-                    text: "Continue with Google",
-                    image: Image.asset(
-                      AppAssets.googleIcon,
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {
-                      // Add Google Sign-In logic here
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  BorderButton(
-                    text: "Continue with Facebook",
-                    image: Image.asset(
-                      AppAssets.facebookIcon,
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {},
-                  ),
+
                   const SizedBox(height: 20),
                   Center(
                     child: RichText(
                       text: TextSpan(
-                        text: "Don't have an account? ",
+                        text: "Already have an account? ",
                         style: AppTextStyles.normalText,
                         children: [
                           TextSpan(
-                            text: "Sign Up",
+                            text: "Sign In",
                             style: const TextStyle(
                               color: AppColors.primaryColor,
                               fontWeight: FontWeight.bold,
@@ -207,14 +201,13 @@ class _SignInScreenState extends State<SignInScreen> {
                             recognizer:
                                 TapGestureRecognizer()
                                   ..onTap = () {
-                                    Get.to(() => const SignUpScreen());
+                                    Get.back();
                                   },
                           ),
                         ],
                       ),
                     ),
                   ),
-
                   const Spacer(),
                 ],
               ),
