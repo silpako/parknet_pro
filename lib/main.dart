@@ -8,7 +8,7 @@ import 'package:parknet_pro/view/splash.dart';
 import 'package:parknet_pro/view/user/user_homepage.dart';
 
 void main() async {
-  await WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: "AIzaSyBuVo_VviNdd9l07vV8Hm5TgTvshlz-C-M",
