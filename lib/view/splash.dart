@@ -9,8 +9,6 @@ class SplashScreen extends GetView<SplashController> {
 
   @override
   Widget build(BuildContext context) {
-    controller;
-
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Center(
@@ -23,35 +21,40 @@ class SplashScreen extends GetView<SplashController> {
             builder: (context, value, child) {
               return Opacity(opacity: value, child: child);
             },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(AppAssets.splashScreenImg, height: 200),
-                const SizedBox(height: 32),
-                const Text(
-                  "ParkNet Pro",
-                  style: TextStyle(
-                    color: AppColors.primaryColor,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  "Find & manage your parking with ease.\nSmart. Simple. Reliable.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.grey,
-                    fontSize: 16,
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
+            child: const SplashContent(), // Stable child
           ),
         ),
       ),
+    );
+  }
+}
+
+class SplashContent extends StatelessWidget {
+  const SplashContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(AppAssets.splashScreenImg, height: 200),
+        const SizedBox(height: 32),
+        const Text(
+          "ParkNet Pro",
+          style: TextStyle(
+            color: AppColors.primaryColor,
+            fontSize: 36,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          "Find & manage your parking with ease.\nSmart. Simple. Reliable.",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: AppColors.grey, fontSize: 16, height: 1.4),
+        ),
+      ],
     );
   }
 }

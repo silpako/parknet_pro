@@ -118,22 +118,25 @@ class _SignInScreenState extends State<SignInScreen> {
                   GreenButton(
                     text: 'Sign In',
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        FirebaseFunctions()
-                            .loginUser(
-                              emaill: emailcontroller.text.trim(),
-                              password: passwordcontroller.text.trim(),
-                            )
-                            .then((response) {
-                              if (response == null) {
-                                Get.offAll(() => UserHomepage());
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(response)),
-                                );
-                              }
-                            });
-                      }
+                      Get.offAll(() => AdminHomepage());
+                      // if (_formKey.currentState!.validate()) {
+                      //   FirebaseFunctions()
+                      //       .loginUser(
+                      //         emaill: emailcontroller.text.trim(),
+                      //         password: passwordcontroller.text.trim(),
+                      //       )
+                      //       .then((response) {
+                      //         if (response == null) {
+                      //           Get.offAll(() => UserHomepage());
+                      //         } else {
+                      //           ScaffoldMessenger.of(context).showSnackBar(
+                      //             SnackBar(content: Text(response)),
+                      //           );
+                      //         }
+                      //       });
+                      // }
+
+                      //=============================
                       //   ScaffoldMessenger.of(context).showSnackBar(
                       //     const SnackBar(
                       //       content: Text('Login Successful!'),

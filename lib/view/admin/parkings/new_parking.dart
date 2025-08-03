@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parknet_pro/controller/parking_controller.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 
 class NewParking extends StatefulWidget {
@@ -16,6 +17,7 @@ class _NewParkingState extends State<NewParking> {
   late TextEditingController descriptionController;
   late TextEditingController locationController;
   late TextEditingController priceController;
+  late TextEditingController fineController;
 
   @override
   void initState() {
@@ -24,6 +26,7 @@ class _NewParkingState extends State<NewParking> {
     descriptionController = TextEditingController();
     locationController = TextEditingController();
     priceController = TextEditingController();
+    fineController = TextEditingController();
   }
 
   @override
@@ -33,10 +36,13 @@ class _NewParkingState extends State<NewParking> {
     descriptionController.dispose();
     locationController.dispose();
     priceController.dispose();
+    fineController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final ParkingController controller = Get.put(ParkingController());
+
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -87,6 +93,14 @@ class _NewParkingState extends State<NewParking> {
                 controller: priceController,
                 keyboardType: TextInputType.number,
               ),
+
+              const SizedBox(height: 16),
+              buildTextField(
+                label: 'Fine Amount (₹)',
+                icon: Icons.currency_rupee,
+                controller: fineController,
+                keyboardType: TextInputType.number,
+              ),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
@@ -99,10 +113,10 @@ class _NewParkingState extends State<NewParking> {
                     ),
                   ),
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Save logic here
-                      Get.back();
-                    }
+                    // if (_formKey.currentState!.validate()) {
+                    //   Get.back();
+                    // }
+                    controller.addParking();
                   },
                   child: const Text(
                     "Save Parking",

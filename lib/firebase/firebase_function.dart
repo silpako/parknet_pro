@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseFunctions {
@@ -43,5 +44,27 @@ class FirebaseFunctions {
   // Sign Out
   Future<void> logoutUser() async {
     await FirebaseAuth.instance.signOut();
+  }
+
+  Future<String?> postParking({
+    required String parkingName,
+    required String description,
+    required String location,
+    required double amount,
+    required double fineAmount,
+  }) async {
+    try {
+      await FirebaseFirestore.instance.collection('parkings').add({
+        'parkingName': parkingName,
+        'description': description,
+        'location': location,
+        'amount': amount,
+        'fineAmount': fineAmount,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      return null; // success
+    } catch (e) {
+      return e.toString(); // return error message
+    }
   }
 }
