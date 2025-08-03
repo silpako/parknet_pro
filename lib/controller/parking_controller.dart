@@ -1,28 +1,43 @@
-import 'package:get/state_manager.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:parknet_pro/error_response/error_message.dart';
+import 'package:parknet_pro/error_response/success_message.dart';
 import 'package:parknet_pro/firebase/firebase_function.dart';
+import 'package:parknet_pro/view/admin/parkings/parking_main.dart';
 
 class ParkingController extends GetxController {
   RxBool isLoading = false.obs;
   final firebaseFunctions = FirebaseFunctions(); // instance
 
-  Future<void> addParking() async {
+  Future<void> addParking(
+    BuildContext context,
+    parkingName,
+    description,
+    location,
+    amountString,
+    fineAmountString,
+  ) async {
     try {
       isLoading(true);
+      double amount = double.parse(amountString);
+      double fineAmount = double.parse(fineAmountString);
+      print("------- cone");
 
       final result = await firebaseFunctions.postParking(
-        parkingName: 'Green Parking Lot',
-        description: 'Underground parking with 24/7 security',
-        location: 'Palakkad',
-        amount: 50.0,
-        fineAmount: 60.0,
+        parkingName: parkingName,
+        description: description,
+        location: location,
+        amount: amount,
+        fineAmount: fineAmount,
       );
 
       if (result == null) {
-        print('Parking added successfully');
-        // You can also show a success snackbar or dialog here
+        if (!context.mounted) return;
+        showSuccessMessage(context, "Parking Created Successfully!");
+        Get.to(() => ParkingMain());
       } else {
-        print('Error: $result');
-        // Show error to user if needed
+        if (!context.mounted) return;
+        showOverlayError(context, "can't create parking");
       }
     } catch (e) {
       print('Unexpected error: $e');

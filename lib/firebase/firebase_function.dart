@@ -54,16 +54,19 @@ class FirebaseFunctions {
     required double fineAmount,
   }) async {
     try {
+      print("-------------------------------- called -----");
       await FirebaseFirestore.instance.collection('parkings').add({
         'parkingName': parkingName,
         'description': description,
         'location': location,
         'amount': amount,
         'fineAmount': fineAmount,
-        'createdAt': FieldValue.serverTimestamp(),
+        'createdAt': FieldValue.serverTimestamp(),  
       });
+      print("--> added completed -.");
       return null; // success
     } catch (e) {
+      print("error -> $e");
       return e.toString(); // return error message
     }
   }

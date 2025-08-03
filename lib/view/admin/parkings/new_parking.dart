@@ -104,29 +104,45 @@ class _NewParkingState extends State<NewParking> {
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.red,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: () {
-                    // if (_formKey.currentState!.validate()) {
-                    //   Get.back();
-                    // }
-                    controller.addParking();
-                  },
-                  child: const Text(
-                    "Save Parking",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                child: Obx(() {
+                  return controller.isLoading.isTrue
+                      ? const Center(
+                        child: SizedBox(
+                          width: 25,
+                          height: 25,
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                      : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.red,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            controller.addParking(
+                              context,
+                              nameController.text,
+                              descriptionController.text,
+                              locationController.text,
+                              priceController.text,
+                              fineController.text,
+                            );
+                          }
+                        },
+                        child: const Text(
+                          "Save Parking",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                }),
               ),
             ],
           ),
