@@ -54,6 +54,7 @@ class FirebaseFunctions {
     required double fineAmount,
   }) async {
     try {
+      // Check if parkingName already exists
       final existing =
           await FirebaseFirestore.instance
               .collection('parkings')
@@ -64,7 +65,11 @@ class FirebaseFunctions {
         return "Parking name already exists.";
       }
 
-      await FirebaseFirestore.instance.collection('parkings').add({
+      final docRef = FirebaseFirestore.instance.collection('parkings').doc();
+      final String newId = docRef.id;
+
+      await docRef.set({
+        'id': newId,
         'parkingName': parkingName,
         'description': description,
         'location': location,
@@ -72,11 +77,12 @@ class FirebaseFunctions {
         'fineAmount': fineAmount,
         'createdAt': FieldValue.serverTimestamp(),
       });
-      print("--> added completed -.");
+
+      print("--> added completed with id: $newId");
       return null; // success
     } catch (e) {
       print("error -> $e");
-      return e.toString(); // return error message
+      return e.toString();
     }
   }
 
@@ -94,6 +100,16 @@ class FirebaseFunctions {
     } catch (e) {
       print("getParking error -> $e");
       return [];
+    }
+  }
+
+  Future<String?> deleteParking(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection('parkings').doc(id).delete();
+      return null;
+    } catch (e) {
+      print("deleteParking error -> $e");
+      return e.toString(); // return error message
     }
   }
 }

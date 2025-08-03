@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parknet_pro/controller/parking_controller.dart';
+import 'package:parknet_pro/error_response/delete_popup.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 
 class SingleParkingCard extends StatelessWidget {
@@ -110,7 +111,9 @@ class SingleParkingCard extends StatelessWidget {
                   icon: Icons.delete,
                   label: "Delete",
                   onTap: () {
-                    // TODO: Delete action
+                    showDeleteDialog(context, "Parking", () async {
+                      controller.deleteParking(parking['id']);
+                    });
                   },
                   color: AppColors.red,
                 ),

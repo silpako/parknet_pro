@@ -8,6 +8,7 @@ import 'package:parknet_pro/view/admin/parkings/parking_main.dart';
 class ParkingController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool getParkingLoading = false.obs;
+  RxBool deleteParkingLoading = false.obs;
   RxList<Map<String, dynamic>> parkingList = <Map<String, dynamic>>[].obs;
   final firebaseFunctions = FirebaseFunctions();
 
@@ -71,6 +72,42 @@ class ParkingController extends GetxController {
       print("error occured while getting: $e");
     } finally {
       getParkingLoading(false);
+    }
+  }
+
+  void deleteParking(String id) async {
+    try {
+      deleteParkingLoading(true);
+
+      final result = await firebaseFunctions.deleteParking(id);
+
+      if (result == null) {
+        fetchAllParkings();
+        Get.snackbar(
+          "Success",
+          "Parking deleted successfully",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        // Handle error
+        Get.snackbar(
+          "Error",
+          result,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      print("Error while deleting: $e");
+      Get.snackbar(
+        "Error",
+        "Something went wrong",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      deleteParkingLoading(false);
     }
   }
 }
