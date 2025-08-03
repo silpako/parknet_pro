@@ -15,7 +15,7 @@ void main() async {
     options: FirebaseOptions(
       apiKey: "AIzaSyBuVo_VviNdd9l07vV8Hm5TgTvshlz-C-M",
       appId: "1:222670100529:android:d115f8a8c15de74baddd10",
-      messagingSenderId: "",
+      messagingSenderId: "222670100529",
       projectId: "parkingsystem-c415d",
     ),
   );
