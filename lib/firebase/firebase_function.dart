@@ -54,14 +54,23 @@ class FirebaseFunctions {
     required double fineAmount,
   }) async {
     try {
-      print("-------------------------------- called -----");
+      final existing =
+          await FirebaseFirestore.instance
+              .collection('parkings')
+              .where('parkingName', isEqualTo: parkingName)
+              .get();
+
+      if (existing.docs.isNotEmpty) {
+        return "Parking name already exists.";
+      }
+
       await FirebaseFirestore.instance.collection('parkings').add({
         'parkingName': parkingName,
         'description': description,
         'location': location,
         'amount': amount,
         'fineAmount': fineAmount,
-        'createdAt': FieldValue.serverTimestamp(),  
+        'createdAt': FieldValue.serverTimestamp(),
       });
       print("--> added completed -.");
       return null; // success

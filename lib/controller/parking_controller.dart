@@ -21,7 +21,6 @@ class ParkingController extends GetxController {
       isLoading(true);
       double amount = double.parse(amountString);
       double fineAmount = double.parse(fineAmountString);
-      print("------- cone");
 
       final result = await firebaseFunctions.postParking(
         parkingName: parkingName,
@@ -35,9 +34,12 @@ class ParkingController extends GetxController {
         if (!context.mounted) return;
         showSuccessMessage(context, "Parking Created Successfully!");
         Get.to(() => ParkingMain());
+      } else if (result == "Parking name already exists.") {
+        if (!context.mounted) return;
+        showOverlayError(context, "Parking name already exists.");
       } else {
         if (!context.mounted) return;
-        showOverlayError(context, "can't create parking");
+        showOverlayError(context, "Can't create parking.");
       }
     } catch (e) {
       print('Unexpected error: $e');
