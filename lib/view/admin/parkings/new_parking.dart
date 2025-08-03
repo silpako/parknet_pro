@@ -4,7 +4,9 @@ import 'package:parknet_pro/controller/parking_controller.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 
 class NewParking extends StatefulWidget {
-  const NewParking({super.key});
+  final Map<String, dynamic>? parking;
+
+  const NewParking({super.key, this.parking});
 
   @override
   State<NewParking> createState() => _NewParkingState();
@@ -22,11 +24,21 @@ class _NewParkingState extends State<NewParking> {
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController();
-    descriptionController = TextEditingController();
-    locationController = TextEditingController();
-    priceController = TextEditingController();
-    fineController = TextEditingController();
+    nameController = TextEditingController(
+      text: widget.parking?['parkingName'] ?? '',
+    );
+    descriptionController = TextEditingController(
+      text: widget.parking?['description'] ?? '',
+    );
+    locationController = TextEditingController(
+      text: widget.parking?['location'] ?? '',
+    );
+    priceController = TextEditingController(
+      text: widget.parking?['amount']?.toString() ?? '',
+    );
+    fineController = TextEditingController(
+      text: widget.parking?['fineAmount']?.toString() ?? '',
+    );
   }
 
   @override
@@ -55,8 +67,8 @@ class _NewParkingState extends State<NewParking> {
           onTap: () => Get.back(),
           child: const Icon(Icons.arrow_back_rounded, color: Colors.white),
         ),
-        title: const Text(
-          "Add New Parking",
+        title: Text(
+          widget.parking != null ? "Edit Parking" : "Add New Parking",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -105,7 +117,12 @@ class _NewParkingState extends State<NewParking> {
               SizedBox(
                 width: double.infinity,
                 child: Obx(() {
-                  return controller.isLoading.isTrue
+                  final isLoading =
+                      widget.parking != null
+                          ? controller.isEditingLoading.value
+                          : controller.isLoading.value;
+
+                  return isLoading
                       ? const Center(
                         child: SizedBox(
                           width: 25,
@@ -123,19 +140,32 @@ class _NewParkingState extends State<NewParking> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            controller.addParking(
-                              context,
-                              nameController.text,
-                              descriptionController.text,
-                              locationController.text,
-                              priceController.text,
-                              fineController.text,
-                            );
+                            if (widget.parking != null) {
+                              controller.updateParking(
+                                widget.parking!['id'],
+                                nameController.text,
+                                descriptionController.text,
+                                locationController.text,
+                                priceController.text,
+                                fineController.text,
+                              );
+                            } else {
+                              controller.addParking(
+                                context,
+                                nameController.text,
+                                descriptionController.text,
+                                locationController.text,
+                                priceController.text,
+                                fineController.text,
+                              );
+                            }
                           }
                         },
-                        child: const Text(
-                          "Save Parking",
-                          style: TextStyle(
+                        child: Text(
+                          widget.parking != null
+                              ? "Edit Parking"
+                              : "Save Parking",
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

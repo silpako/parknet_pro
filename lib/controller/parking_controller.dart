@@ -9,6 +9,7 @@ class ParkingController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool getParkingLoading = false.obs;
   RxBool deleteParkingLoading = false.obs;
+  RxBool isEditingLoading = false.obs;
   RxList<Map<String, dynamic>> parkingList = <Map<String, dynamic>>[].obs;
   final firebaseFunctions = FirebaseFunctions();
 
@@ -108,6 +109,56 @@ class ParkingController extends GetxController {
       );
     } finally {
       deleteParkingLoading(false);
+    }
+  }
+
+  Future<void> updateParking(
+    String id,
+    String name,
+    String description,
+    String location,
+    String amount,
+    String fineAmount,
+  ) async {
+    try {
+      isEditingLoading(true);
+
+      final result = await firebaseFunctions.updateParking(
+        id,
+        name,
+        description,
+        location,
+        amount,
+        fineAmount,
+      );
+
+      if (result == null) {
+        fetchAllParkings();
+        Get.back();
+
+        Get.snackbar(
+          "Success",
+          "Parking updated successfully",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar(
+          "Error",
+          "Update failed",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Update failed",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isEditingLoading(false);
     }
   }
 }

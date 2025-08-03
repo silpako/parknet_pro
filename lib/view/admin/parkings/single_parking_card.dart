@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:parknet_pro/controller/parking_controller.dart';
 import 'package:parknet_pro/error_response/delete_popup.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
+import 'package:parknet_pro/view/admin/parkings/new_parking.dart';
 
 class SingleParkingCard extends StatelessWidget {
   final int index;
@@ -102,7 +103,7 @@ class SingleParkingCard extends StatelessWidget {
                   icon: Icons.edit,
                   label: "Edit",
                   onTap: () {
-                    // TODO: Edit action
+                    Get.to(() => NewParking(parking: parking));
                   },
                   color: AppColors.primaryColor,
                 ),

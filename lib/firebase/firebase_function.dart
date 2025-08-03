@@ -109,7 +109,30 @@ class FirebaseFunctions {
       return null;
     } catch (e) {
       print("deleteParking error -> $e");
-      return e.toString(); // return error message
+      return e.toString();
+    }
+  }
+
+  Future<String?> updateParking(
+    String id,
+    String name,
+    String description,
+    String location,
+    String amount,
+    String fineAmount,
+  ) async {
+    try {
+      await FirebaseFirestore.instance.collection('parkings').doc(id).update({
+        'parkingName': name,
+        'description': description,
+        'location': location,
+        'amount': double.tryParse(amount) ?? 0,
+        'fineAmount': double.tryParse(fineAmount) ?? 0,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      return null;
+    } catch (e) {
+      return e.toString();
     }
   }
 }
