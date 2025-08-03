@@ -7,7 +7,15 @@ import 'package:parknet_pro/view/admin/parkings/parking_main.dart';
 
 class ParkingController extends GetxController {
   RxBool isLoading = false.obs;
-  final firebaseFunctions = FirebaseFunctions(); // instance
+  RxBool getParkingLoading = false.obs;
+  RxList<Map<String, dynamic>> parkingList = <Map<String, dynamic>>[].obs;
+  final firebaseFunctions = FirebaseFunctions();
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchAllParkings();
+  }
 
   Future<void> addParking(
     BuildContext context,
@@ -33,6 +41,7 @@ class ParkingController extends GetxController {
       if (result == null) {
         if (!context.mounted) return;
         showSuccessMessage(context, "Parking Created Successfully!");
+        fetchAllParkings();
         Get.to(() => ParkingMain());
       } else if (result == "Parking name already exists.") {
         if (!context.mounted) return;
@@ -45,6 +54,23 @@ class ParkingController extends GetxController {
       print('Unexpected error: $e');
     } finally {
       isLoading(false);
+    }
+  }
+
+  void fetchAllParkings() async {
+    try {
+      getParkingLoading(true);
+
+      List<Map<String, dynamic>> parkings =
+          await firebaseFunctions.getParking();
+
+      if (parkings.isNotEmpty) {
+        parkingList.assignAll(parkings);
+      }
+    } catch (e) {
+      print("error occured while getting: $e");
+    } finally {
+      getParkingLoading(false);
     }
   }
 }

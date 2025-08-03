@@ -79,4 +79,21 @@ class FirebaseFunctions {
       return e.toString(); // return error message
     }
   }
+
+  Future<List<Map<String, dynamic>>> getParking() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('parkings')
+              .orderBy('createdAt', descending: true)
+              .get();
+
+      return snapshot.docs.map((doc) {
+        return {'id': doc.id, ...doc.data()};
+      }).toList();
+    } catch (e) {
+      print("getParking error -> $e");
+      return [];
+    }
+  }
 }

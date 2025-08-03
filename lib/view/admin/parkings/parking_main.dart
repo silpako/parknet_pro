@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parknet_pro/controller/parking_controller.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 import 'package:parknet_pro/view/admin/parkings/new_parking.dart';
 import 'package:parknet_pro/view/admin/parkings/single_parking_card.dart';
@@ -9,6 +10,7 @@ class ParkingMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ParkingController controller = Get.put(ParkingController());
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -28,57 +30,54 @@ class ParkingMain extends StatelessWidget {
         centerTitle: true,
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            SingleParkingCard(),
-            const SizedBox(height: 10),
-            SingleParkingCard(),
-          ],
-        ),
-      ),
+      body: Obx(() {
+        if (controller.getParkingLoading.isTrue) {
+          return const Center(
+            child: SizedBox(
+              width: 25,
+              height: 25,
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else {
+          if (controller.parkingList.isEmpty) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.local_parking, size: 60, color: Colors.grey),
+                  SizedBox(height: 12),
+                  Text(
+                    "No Parkings Found",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "Click the + button to add a new parking slot.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: ListView.separated(
+                itemBuilder:
+                    (context, index) => SingleParkingCard(index: index),
+                separatorBuilder: (context, index) => SizedBox(height: 10),
+                itemCount: controller.parkingList.length,
+              ),
+            );
+          }
+        }
+      }),
 
-      // Padding(
-      //   padding: const EdgeInsets.all(16.0),
-      //   child: Container(
-      //     width: double.infinity,
-      //     padding: const EdgeInsets.all(24),
-      //     decoration: BoxDecoration(
-      //       color: Colors.white,
-      //       borderRadius: BorderRadius.circular(16),
-      //       boxShadow: [
-      //         BoxShadow(
-      //           color: Colors.grey.withOpacity(0.15),
-      //           blurRadius: 12,
-      //           offset: const Offset(0, 4),
-      //         ),
-      //       ],
-      //     ),
-      //     child: Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: [
-      //         Icon(
-      //           Icons.local_parking,
-      //           size: 64,
-      //           color: AppColors.primaryColor.withOpacity(0.3),
-      //         ),
-      //         const SizedBox(height: 16),
-      //         const Text(
-      //           "No parking entries yet",
-      //           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-      //         ),
-      //         const SizedBox(height: 8),
-      //         Text(
-      //           "Tap the + button to add your first parking location.",
-      //           style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-      //           textAlign: TextAlign.center,
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.to(() => const NewParking());
