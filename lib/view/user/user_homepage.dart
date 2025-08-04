@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:parknet_pro/controller/customer_controller.dart';
 import 'package:parknet_pro/custome_widget/logout_popup.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 import 'package:parknet_pro/view/user/single_card.dart';
@@ -15,6 +17,7 @@ class _UserHomepageState extends State<UserHomepage> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
+    final CustomerController controller = Get.put(CustomerController());
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -64,10 +67,51 @@ class _UserHomepageState extends State<UserHomepage> {
             ),
             SizedBox(height: screenHeight * 0.025),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: SingleCard(),
-            ),
+            Obx(() {
+              if (controller.getParkingLoading.isTrue) {
+                return const Center(
+                  child: SizedBox(
+                    width: 25,
+                    height: 25,
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else {
+                if (controller.parkingList.isEmpty) {
+                  return Text(
+                    "No Parkings Found",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  );
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    child: SizedBox(
+                      // Set a bounded height to avoid unbounded error
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: ListView.separated(
+                        itemBuilder:
+                            (context, index) => Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              child: SingleCard(index: index),
+                            ),
+                        separatorBuilder:
+                            (context, index) => SizedBox(height: 10),
+                        itemCount: controller.parkingList.length,
+                      ),
+                    ),
+                  );
+                }
+              }
+            }),
           ],
         ),
       ),

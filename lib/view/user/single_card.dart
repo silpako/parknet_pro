@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parknet_pro/controller/customer_controller.dart';
 import 'package:parknet_pro/utils/app_assets.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 import 'package:parknet_pro/view/user/book_now_page.dart';
 
 class SingleCard extends StatelessWidget {
-  const SingleCard({super.key});
+  final int index;
+  const SingleCard({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
+    final CustomerController controller = Get.find<CustomerController>();
+    final parking = controller.parkingList[index];
     return Container(
       width: double.infinity,
       color: AppColors.lightPurple, // background of the whole screen
@@ -29,8 +33,8 @@ class SingleCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Lulu Hypermarket Parking",
+            Text(
+              parking['parkingName'] ?? '',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
 
@@ -65,15 +69,15 @@ class SingleCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Text(
-                        "Kochi's leading supermarket and departmental store offering everything from groceries to electronics and much more.",
+                      Text(
+                        parking['description'] ?? '',
                         style: TextStyle(fontSize: 14, height: 1.4),
                         softWrap: true,
                       ),
                       const SizedBox(height: 10),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             "Location: ",
                             style: TextStyle(
@@ -83,7 +87,7 @@ class SingleCard extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              "Kochi, Kerala",
+                              parking['location'] ?? '',
                               style: TextStyle(fontSize: 14),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -103,16 +107,19 @@ class SingleCard extends StatelessWidget {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
-                      "Charge/hr",
+                      "Charge/day",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
                     ),
                     SizedBox(height: 4),
-                    Text("Rs. 50", style: TextStyle(fontSize: 14)),
+                    Text(
+                      "Rs. ${parking['amount'] ?? ''}",
+                      style: TextStyle(fontSize: 14),
+                    ),
                   ],
                 ),
                 GestureDetector(
