@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 import 'package:parknet_pro/error_response/error_message.dart';
 import 'package:parknet_pro/error_response/success_message.dart';
 import 'package:parknet_pro/firebase/firebase_function.dart';
+import 'package:parknet_pro/view/user/my_bookings/my_bookings.dart';
 
 class BookingController extends GetxController {
   RxInt days = 1.obs;
@@ -10,7 +11,15 @@ class BookingController extends GetxController {
   final int pricePerDay = 50;
   RxInt totalPrice = 50.obs;
   RxBool isLoading = false.obs;
+  RxBool getBookingLoading = false.obs;
   final firebaseFunctions = FirebaseFunctions();
+  RxList<Map<String, dynamic>> bookingList = <Map<String, dynamic>>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchAllBookings();
+  }
 
   void increaseDays() {
     days.value++;
@@ -75,8 +84,8 @@ class BookingController extends GetxController {
       if (result == null) {
         if (!context.mounted) return;
         showSuccessMessage(context, "Parking Booked Successfully!");
-        // fetchAllParkings();
-        // Get.to(() => ParkingMain());
+        fetchAllBookings();
+        Get.to(() => MyBookings());
       } else if (result == "Parking name already exists.") {
         if (!context.mounted) return;
         showOverlayError(context, "Parking name already exists.");
@@ -88,6 +97,23 @@ class BookingController extends GetxController {
       print('Unexpected error: $e');
     } finally {
       isLoading(false);
+    }
+  }
+
+  void fetchAllBookings() async {
+    try {
+      getBookingLoading(true);
+
+      List<Map<String, dynamic>> bookings =
+          await firebaseFunctions.getMyBookings();
+
+      if (bookings.isNotEmpty) {
+        bookingList.assignAll(bookings);
+      }
+    } catch (e) {
+      print("error occured while getting: $e");
+    } finally {
+      getBookingLoading(false);
     }
   }
 }

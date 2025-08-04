@@ -167,4 +167,18 @@ class FirebaseFunctions {
       return e.toString();
     }
   }
+
+  Future<List<Map<String, dynamic>>> getMyBookings() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
+    if (uid == null) return [];
+
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('bookings')
+            .where('userId', isEqualTo: uid)
+            .get();
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
 }
