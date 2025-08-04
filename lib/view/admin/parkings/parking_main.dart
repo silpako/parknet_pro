@@ -82,7 +82,7 @@ class ParkingMain extends StatelessWidget {
         onPressed: () {
           Get.to(() => const NewParking());
         },
-        backgroundColor: AppColors.red,
+        backgroundColor: AppColors.primaryColor,
         child: const Icon(Icons.add, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
