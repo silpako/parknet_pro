@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parknet_pro/controller/customer_controller.dart';
@@ -14,6 +15,19 @@ class UserHomepage extends StatefulWidget {
 }
 
 class _UserHomepageState extends State<UserHomepage> {
+  String userName = "User";
+
+  @override
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        userName = user.displayName ?? user.email?.split('@').first ?? "User";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -36,7 +50,7 @@ class _UserHomepageState extends State<UserHomepage> {
             SizedBox(width: screenWidth * 0.03),
             Expanded(
               child: Text(
-                "Welcome User",
+                "Welcome $userName",
                 style: TextStyle(
                   color: AppColors.white,
                   fontSize: screenWidth * 0.05,
@@ -44,6 +58,7 @@ class _UserHomepageState extends State<UserHomepage> {
                 ),
               ),
             ),
+
             InkWell(
               onTap: () {
                 showLogoutDialog(context);
@@ -68,7 +83,7 @@ class _UserHomepageState extends State<UserHomepage> {
               ),
             ),
             SizedBox(height: screenHeight * 0.015),
-        
+
             // 🚗 Booking Buttons Row
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
@@ -158,9 +173,9 @@ class _UserHomepageState extends State<UserHomepage> {
                 ],
               ),
             ),
-        
+
             SizedBox(height: screenHeight * 0.015),
-        
+
             // 🅿️ Parking List
             Obx(() {
               if (controller.getParkingLoading.isTrue) {
@@ -206,7 +221,7 @@ class _UserHomepageState extends State<UserHomepage> {
                 );
               }
             }),
-        
+
             SizedBox(height: screenHeight * 0.025),
           ],
         ),

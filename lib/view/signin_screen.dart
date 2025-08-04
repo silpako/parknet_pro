@@ -23,6 +23,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController passwordcontroller = TextEditingController();
   bool isRememberMe = false;
   final _formKey = GlobalKey<FormState>();
+  bool isLoading = false; // 👈 loader flag
 
   @override
   Widget build(BuildContext context) {
@@ -115,32 +116,46 @@ class _SignInScreenState extends State<SignInScreen> {
                     ],
                   ),
                   const SizedBox(height: 30),
-                  GreenButton(
-                    text: 'Sign In',
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        if (emailcontroller.text == "admin@gmail.com" &&
-                            passwordcontroller.text == "12345") {
-                          Get.offAll(() => AdminHomepage());
-                        } else {
-                          FirebaseFunctions()
-                              .loginUser(
-                                emaill: emailcontroller.text.trim(),
-                                password: passwordcontroller.text.trim(),
-                              )
-                              .then((response) {
-                                if (response == null) {
-                                  Get.offAll(() => UserHomepage());
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(response)),
-                                  );
-                                }
-                              });
-                        }
-                      }
-                    },
-                  ),
+
+                  // ✅ Show Loader or Button
+                  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : GreenButton(
+                        text: 'Sign In',
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() => isLoading = true);
+
+                            if (emailcontroller.text == "admin@gmail.com" &&
+                                passwordcontroller.text == "123456") {
+                              setState(() => isLoading = false);
+                              Get.offAll(() => const AdminHomepage());
+                            } else {
+                              FirebaseFunctions()
+                                  .loginUser(
+                                    emaill: emailcontroller.text.trim(),
+                                    password: passwordcontroller.text.trim(),
+                                  )
+                                  .then((response) {
+                                    setState(
+                                      () => isLoading = false,
+                                    ); // Stop loader
+
+                                    if (response == null) {
+                                      Get.offAll(() => const UserHomepage());
+                                    } else {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(content: Text(response)),
+                                      );
+                                    }
+                                  });
+                            }
+                          }
+                        },
+                      ),
+
                   const SizedBox(height: 20),
                   Row(
                     children: const [
@@ -200,7 +215,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                   ),
-
                   const Spacer(),
                 ],
               ),

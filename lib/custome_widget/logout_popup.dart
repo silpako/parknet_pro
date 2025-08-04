@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:parknet_pro/view/signin_screen.dart';
 
 void showLogoutDialog(BuildContext context) {
@@ -41,8 +42,16 @@ void showLogoutDialog(BuildContext context) {
                 ),
               ),
               TextButton(
-                onPressed: () {
-                  Get.offAll(() => SignInScreen());
+                onPressed: () async {
+                  try {
+                    await FirebaseAuth.instance.signOut();
+                    Get.offAll(() => const SignInScreen());
+                  } catch (e) {
+                    Get.back();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Logout failed: $e")),
+                    );
+                  }
                 },
                 child: const Text(
                   "Logout",
