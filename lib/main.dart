@@ -9,6 +9,7 @@ import 'package:parknet_pro/controller/splash_controller.dart';
 import 'package:parknet_pro/view/admin/admin_homepage.dart';
 import 'package:parknet_pro/view/admin/parkings/new_parking.dart';
 import 'package:parknet_pro/view/admin/parkings/parking_main.dart';
+import 'package:parknet_pro/view/signin_screen.dart';
 import 'package:parknet_pro/view/splash.dart';
 import 'package:parknet_pro/view/user/user_homepage.dart';
 
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const UserHomepage(),
+      home: const SignInScreen(),
     );
   }
 }

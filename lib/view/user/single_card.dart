@@ -124,7 +124,14 @@ class SingleCard extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(() => BookNowPage());
+                    Get.to(
+                      () => BookNowPage(
+                        parkingId: parking['parkingId'] ?? '',
+                        parkingName: parking['parkingName'] ?? '',
+                        amount: parking['amount'] ?? '',
+                        location: parking['location'] ?? '',
+                      ),
+                    );
                   },
                   child: Container(
                     height: 44,

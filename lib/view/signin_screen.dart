@@ -119,22 +119,22 @@ class _SignInScreenState extends State<SignInScreen> {
                     text: 'Sign In',
                     onPressed: () {
                       Get.offAll(() => AdminHomepage());
-                      // if (_formKey.currentState!.validate()) {
-                      //   FirebaseFunctions()
-                      //       .loginUser(
-                      //         emaill: emailcontroller.text.trim(),
-                      //         password: passwordcontroller.text.trim(),
-                      //       )
-                      //       .then((response) {
-                      //         if (response == null) {
-                      //           Get.offAll(() => UserHomepage());
-                      //         } else {
-                      //           ScaffoldMessenger.of(context).showSnackBar(
-                      //             SnackBar(content: Text(response)),
-                      //           );
-                      //         }
-                      //       });
-                      // }
+                      if (_formKey.currentState!.validate()) {
+                        FirebaseFunctions()
+                            .loginUser(
+                              emaill: emailcontroller.text.trim(),
+                              password: passwordcontroller.text.trim(),
+                            )
+                            .then((response) {
+                              if (response == null) {
+                                Get.offAll(() => UserHomepage());
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(response)),
+                                );
+                              }
+                            });
+                      }
 
                       //=============================
                       //   ScaffoldMessenger.of(context).showSnackBar(

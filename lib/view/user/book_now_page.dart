@@ -6,7 +6,17 @@ import 'package:parknet_pro/utils/app_assets.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 
 class BookNowPage extends StatefulWidget {
-  const BookNowPage({super.key});
+  final String parkingId;
+  final String parkingName;
+  final double amount;
+  final String location;
+  const BookNowPage({
+    super.key,
+    required this.parkingId,
+    required this.parkingName,
+    required this.amount,
+    required this.location,
+  });
 
   @override
   State<BookNowPage> createState() => _BookNowPageState();
@@ -90,9 +100,9 @@ class _BookNowPageState extends State<BookNowPage> {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
-                      "Lulu Hypermarket Parking",
+                      widget.parkingName,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -100,14 +110,11 @@ class _BookNowPageState extends State<BookNowPage> {
                     ),
                     SizedBox(height: 6),
                     Text(
-                      "Charge per day: Rs. 50",
+                      "Charge per day: Rs. ${widget.amount.toString()}",
                       style: TextStyle(fontSize: 14),
                     ),
                     SizedBox(height: 6),
-                    Text(
-                      "Location: Kochi, Kerala",
-                      style: TextStyle(fontSize: 14),
-                    ),
+                    Text(widget.location, style: TextStyle(fontSize: 14)),
                   ],
                 ),
               ),
@@ -250,39 +257,65 @@ class _BookNowPageState extends State<BookNowPage> {
               const SizedBox(height: 20),
 
               // ✅ Confirm Booking
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              Obx(() {
+                return SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  ),
-                  onPressed: () {
-                    final vehicleNumber = vehicleController.text.trim();
-                    if (vehicleNumber.isEmpty) {
-                      Get.snackbar(
-                        "Error",
-                        "Please enter vehicle number",
-                        backgroundColor: Colors.red.shade100,
-                      );
-                      return;
-                    }
+                    onPressed:
+                        bookingController.isLoading.value
+                            ? null // Disable button while loading
+                            : () {
+                              final vehicleNumber =
+                                  vehicleController.text.trim();
+                              if (vehicleNumber.isEmpty) {
+                                Get.snackbar(
+                                  "Error",
+                                  "Please enter vehicle number",
+                                  backgroundColor: Colors.red.shade100,
+                                );
+                                return;
+                              }
 
-                    // TODO: Add booking logic here
-                  },
-                  child: const Text(
-                    "Confirm Booking",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
+                              bookingController.bookParking(
+                                context,
+                                widget.parkingId,
+                                widget.parkingName,
+                                DateFormat(
+                                  'yyyy-MM-dd',
+                                ).format(bookingController.selectedDate.value!),
+                                bookingController.days.value,
+                                vehicleNumber,
+                                bookingController.totalPrice.value,
+                              );
+                            },
+                    child:
+                        bookingController.isLoading.value
+                            ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ),
+                            )
+                            : const Text(
+                              "Confirm Booking",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
                   ),
-                ),
-              ),
+                );
+              }),
             ],
           ),
         ),

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
+import 'package:parknet_pro/error_response/error_message.dart';
+import 'package:parknet_pro/error_response/success_message.dart';
+import 'package:parknet_pro/firebase/firebase_function.dart';
 
 class BookingController extends GetxController {
   RxInt days = 1.obs;
   Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
   final int pricePerDay = 50;
   RxInt totalPrice = 50.obs;
+  RxBool isLoading = false.obs;
+  final firebaseFunctions = FirebaseFunctions();
 
   void increaseDays() {
     days.value++;
@@ -43,6 +48,46 @@ class BookingController extends GetxController {
 
     if (picked != null) {
       setDate(picked);
+    }
+  }
+
+  Future<void> bookParking(
+    BuildContext context,
+    parkingId,
+    parkingName,
+    slotTime,
+    totalDays,
+    vehicleNumber,
+    totalAmount,
+  ) async {
+    try {
+      isLoading(true);
+
+      final result = await firebaseFunctions.bookParking(
+        parkingId: parkingId,
+        parkingName: parkingName,
+        slotTime: slotTime,
+        totalDays: totalDays,
+        vehicleNumber: vehicleNumber,
+        totalAmount: totalAmount,
+      );
+
+      if (result == null) {
+        if (!context.mounted) return;
+        showSuccessMessage(context, "Parking Booked Successfully!");
+        // fetchAllParkings();
+        // Get.to(() => ParkingMain());
+      } else if (result == "Parking name already exists.") {
+        if (!context.mounted) return;
+        showOverlayError(context, "Parking name already exists.");
+      } else {
+        if (!context.mounted) return;
+        showOverlayError(context, "Can't create parking.");
+      }
+    } catch (e) {
+      print('Unexpected error: $e');
+    } finally {
+      isLoading(false);
     }
   }
 }

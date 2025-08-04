@@ -135,4 +135,36 @@ class FirebaseFunctions {
       return e.toString();
     }
   }
+
+  // ------------- booking -------------------
+
+  Future<String?> bookParking({
+    required String parkingId,
+    required String parkingName,
+    required String slotTime,
+    required int totalDays,
+    required String vehicleNumber,
+    required int totalAmount,
+  }) async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+
+      await FirebaseFirestore.instance.collection('bookings').add({
+        'userId': uid,
+        'parkingId': parkingId,
+        'parkingName': parkingName,
+        'bookingDate': Timestamp.now(),
+        'totalDays': totalDays,
+        'vehicleNumber': vehicleNumber,
+        'totalAmount': totalAmount,
+        'slotTime': slotTime,
+        'status': 'active',
+      });
+
+      return null;
+    } catch (e) {
+      print("error while add booking:- $e");
+      return e.toString();
+    }
+  }
 }
