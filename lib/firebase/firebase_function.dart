@@ -181,4 +181,20 @@ class FirebaseFunctions {
 
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
+
+  Future<List<Map<String, dynamic>>> getAllBookingsForAdmin() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance.collection('bookings').get();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    } catch (e) {
+      print("error while fetching bookings:- $e");
+      return [];
+    }
+  }
 }

@@ -11,9 +11,12 @@ class BookingController extends GetxController {
   final int pricePerDay = 50;
   RxInt totalPrice = 50.obs;
   RxBool isLoading = false.obs;
+  RxBool getBookingForAdminLoading = false.obs;
   RxBool getBookingLoading = false.obs;
   final firebaseFunctions = FirebaseFunctions();
   RxList<Map<String, dynamic>> bookingList = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> bookingListForAdmin =
+      <Map<String, dynamic>>[].obs;
 
   @override
   void onInit() {
@@ -114,6 +117,23 @@ class BookingController extends GetxController {
       print("error occured while getting: $e");
     } finally {
       getBookingLoading(false);
+    }
+  }
+
+  void fetchAllBookingsForAdmin() async {
+    try {
+      getBookingForAdminLoading(true);
+
+      List<Map<String, dynamic>> bookings =
+          await firebaseFunctions.getAllBookingsForAdmin();
+
+      if (bookings.isNotEmpty) {
+        bookingListForAdmin.assignAll(bookings);
+      }
+    } catch (e) {
+      print("error occured while getting: $e");
+    } finally {
+      getBookingForAdminLoading(false);
     }
   }
 }

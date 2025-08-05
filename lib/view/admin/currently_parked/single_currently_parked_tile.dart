@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:parknet_pro/controller/booking_controller.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 
 class SingleCurrentlyParkedTile extends StatelessWidget {
-  const SingleCurrentlyParkedTile({super.key});
+  final int index;
+  const SingleCurrentlyParkedTile({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
+    final BookingController controller = Get.find<BookingController>();
+    final bookings = controller.bookingListForAdmin[index];
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       elevation: 4,
@@ -39,19 +44,19 @@ class SingleCurrentlyParkedTile extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    "KL-07-AB-1234",
+                    bookings['vehicleNumber'] ?? '',
                     style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    "Lulu Mall Parking - Kochi",
+                    "${bookings['parkingName'] ?? ''}",
                     style: TextStyle(fontSize: 13, color: Colors.grey),
                   ),
                   SizedBox(height: 2),
                   Text(
-                    "Started at: 16 July 2025, 10:30 AM",
+                    "Started at: ${bookings['slotTime'] ?? ''}",
                     style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
@@ -60,14 +65,14 @@ class SingleCurrentlyParkedTile extends StatelessWidget {
 
             // Status Icon
             Column(
-              children: const [
-                Icon(Icons.timelapse, color: Colors.orange, size: 22),
+              children: [
+                Icon(Icons.timelapse, color: Colors.green, size: 22),
                 SizedBox(height: 4),
                 Text(
-                  "Ongoing",
+                  bookings['status'] ?? '',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.orange,
+                    color: Colors.green,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
