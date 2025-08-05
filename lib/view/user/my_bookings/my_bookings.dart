@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:parknet_pro/controller/booking_controller.dart';
+import 'package:parknet_pro/custome_widget/cancel_confirmation_popup.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 
 class MyBookings extends StatelessWidget {
@@ -11,6 +12,8 @@ class MyBookings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BookingController controller = Get.put(BookingController());
+    controller.fetchAllBookings();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -25,7 +28,6 @@ class MyBookings extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-
       body: Obx(() {
         if (controller.getBookingLoading.isTrue) {
           return const Center(
@@ -67,6 +69,7 @@ class MyBookings extends StatelessWidget {
               separatorBuilder: (_, __) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final booking = controller.bookingList[index];
+
                 return Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -90,7 +93,7 @@ class MyBookings extends StatelessWidget {
                         children: [
                           Text(
                             booking['parkingName'] ?? '',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                             ),
@@ -109,7 +112,6 @@ class MyBookings extends StatelessWidget {
                           (booking['bookingDate'] as Timestamp).toDate(),
                         ),
                       ),
-
                       const SizedBox(height: 8),
                       _buildInfoRow(
                         Icons.access_time,
@@ -128,6 +130,48 @@ class MyBookings extends StatelessWidget {
                         "Amount",
                         "${booking['totalAmount']}",
                       ),
+
+                      Obx(() {
+                        return SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            onPressed:
+                                controller.cancelBookingLoading.value
+                                    ? null
+                                    : () {
+                                      showCancelConfirmationDialog(
+                                        context,
+                                        booking['id'],
+                                      );
+                                    },
+
+                            child:
+                                controller.cancelBookingLoading.value
+                                    ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                    : const Text(
+                                      "Cancel Booking",
+                                      style: TextStyle(
+                                        color: AppColors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                          ),
+                        );
+                      }),
                     ],
                   ),
                 );

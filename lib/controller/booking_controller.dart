@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:parknet_pro/error_response/error_message.dart';
 import 'package:parknet_pro/error_response/success_message.dart';
 import 'package:parknet_pro/firebase/firebase_function.dart';
+import 'package:parknet_pro/view/user/cancelled/cancelled.dart';
 import 'package:parknet_pro/view/user/my_bookings/my_bookings.dart';
 
 class BookingController extends GetxController {
@@ -13,9 +14,13 @@ class BookingController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool getBookingForAdminLoading = false.obs;
   RxBool getBookingLoading = false.obs;
+  RxBool cancelBookingLoading = false.obs;
+  RxBool getCancelledBookingLoading = false.obs;
   final firebaseFunctions = FirebaseFunctions();
   RxList<Map<String, dynamic>> bookingList = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> bookingListForAdmin =
+      <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> cancelledBookingList =
       <Map<String, dynamic>>[].obs;
 
   @override
@@ -134,6 +139,68 @@ class BookingController extends GetxController {
       print("error occured while getting: $e");
     } finally {
       getBookingForAdminLoading(false);
+    }
+  }
+
+  void cancelBooking(String bookingId, BuildContext context) async {
+    try {
+      cancelBookingLoading(true);
+
+      String? res = await firebaseFunctions.cancelBooking(bookingId);
+
+      if (res == null) {
+        print("-------- successfull");
+
+        Get.snackbar(
+          "Success",
+          "Booking Cancelled Successfully!",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        fetchCancelledBookings();
+        Get.off(() => const Cancelled());
+
+        // await Future.delayed(const Duration(milliseconds: 300));
+      } else if (res == "User not logged in") {
+        print("else if called");
+        Get.snackbar(
+          "Session Expired",
+          "Please log in again.",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        print("else is called");
+        Get.snackbar(
+          "Error",
+          "Can't cancel booking",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print("error occurred while getting: $e");
+      Get.snackbar(
+        "Error",
+        "Something went wrong",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      cancelBookingLoading(false);
+    }
+  }
+
+  void fetchCancelledBookings() async {
+    try {
+      getCancelledBookingLoading(true);
+
+      List<Map<String, dynamic>> bookings =
+          await firebaseFunctions.getCancelledBookings();
+
+      if (bookings.isNotEmpty) {
+        cancelledBookingList.assignAll(bookings);
+      }
+    } catch (e) {
+      print("error occured while getting: $e");
+    } finally {
+      getCancelledBookingLoading(false);
     }
   }
 }

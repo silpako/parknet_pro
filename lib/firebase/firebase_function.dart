@@ -177,9 +177,14 @@ class FirebaseFunctions {
         await FirebaseFirestore.instance
             .collection('bookings')
             .where('userId', isEqualTo: uid)
+            .where('status', isEqualTo: 'active')
             .get();
 
-    return snapshot.docs.map((doc) => doc.data()).toList();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      data['id'] = doc.id;
+      return data;
+    }).toList();
   }
 
   Future<List<Map<String, dynamic>>> getAllBookingsForAdmin() async {
@@ -194,6 +199,55 @@ class FirebaseFunctions {
       }).toList();
     } catch (e) {
       print("error while fetching bookings:- $e");
+      return [];
+    }
+  }
+
+  Future<String?> cancelBooking(String bookingId) async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) return "User not logged in";
+
+      final docRef = FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingId);
+      final docSnapshot = await docRef.get();
+
+      if (!docSnapshot.exists) return "Booking not found";
+
+      final data = docSnapshot.data();
+      if (data == null || data['userId'] != uid) {
+        return "You can only cancel your own bookings";
+      }
+
+      await docRef.update({'status': 'cancelled'});
+
+      return null;
+    } catch (e) {
+      print("Error occurred while cancelling: $e");
+      return "Failed to cancel booking: $e";
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getCancelledBookings() async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) return [];
+
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('bookings')
+              .where('userId', isEqualTo: uid)
+              .where('status', isEqualTo: 'cancelled')
+              .get();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    } catch (e) {
+      print("Error while fetching cancelled bookings: $e");
       return [];
     }
   }
