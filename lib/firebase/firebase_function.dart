@@ -251,4 +251,76 @@ class FirebaseFunctions {
       return [];
     }
   }
+
+  // -- complete bookings
+  Future<String?> completeBooking(String bookingId) async {
+    try {
+      final docRef = FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingId);
+      await docRef.update({'status': 'completed'});
+      return null;
+    } catch (e) {
+      print("Error completing booking: $e");
+      return e.toString();
+    }
+  }
+
+  // --- scheduler ---
+
+  Future<void> checkAndUpdateBookingStatus() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final now = DateTime.now();
+
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('bookings')
+            .where('userId', isEqualTo: uid)
+            .where('status', isEqualTo: 'active')
+            .get();
+
+    for (final doc in snapshot.docs) {
+      final data = doc.data();
+      final bookingDate = (data['bookingDate'] as Timestamp).toDate();
+      final totalDays = data['totalDays'] as int;
+
+      final endTime = bookingDate.add(Duration(days: totalDays));
+      if (now.isAfter(endTime)) {
+        final fineAmount = calculateFine(now, endTime);
+
+        await doc.reference.update({
+          'status': 'fined',
+          'fineAmount': fineAmount,
+        });
+      }
+    }
+  }
+
+  int calculateFine(DateTime now, DateTime endTime) {
+    final overdueHours = now.difference(endTime).inHours;
+    return overdueHours * 10; // ₹10/hour fine
+  }
+
+  Future<List<Map<String, dynamic>>> getCompletedBooking() async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) return [];
+
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('bookings')
+              .where('userId', isEqualTo: uid)
+              .where('status', isEqualTo: 'completed')
+              .get();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    } catch (e) {
+      print("Error while fetching completed bookings: $e");
+      return [];
+    }
+  }
 }

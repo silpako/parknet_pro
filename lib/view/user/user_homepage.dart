@@ -5,6 +5,7 @@ import 'package:parknet_pro/controller/customer_controller.dart';
 import 'package:parknet_pro/custome_widget/logout_popup.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 import 'package:parknet_pro/view/user/cancelled/cancelled.dart';
+import 'package:parknet_pro/view/user/completed/completed.dart';
 import 'package:parknet_pro/view/user/my_bookings/my_bookings.dart';
 import 'package:parknet_pro/view/user/single_card.dart';
 
@@ -161,10 +162,7 @@ class _UserHomepageState extends State<UserHomepage> {
                         ),
                       ),
                       onPressed: () {
-                        Get.snackbar(
-                          "Coming Soon",
-                          "Completed bookings screen is under development",
-                        );
+                        Get.to(() => Completed());
                       },
                     ),
                   ),

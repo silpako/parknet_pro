@@ -4,6 +4,7 @@ import 'package:parknet_pro/error_response/error_message.dart';
 import 'package:parknet_pro/error_response/success_message.dart';
 import 'package:parknet_pro/firebase/firebase_function.dart';
 import 'package:parknet_pro/view/user/cancelled/cancelled.dart';
+import 'package:parknet_pro/view/user/completed/completed.dart';
 import 'package:parknet_pro/view/user/my_bookings/my_bookings.dart';
 
 class BookingController extends GetxController {
@@ -16,18 +17,16 @@ class BookingController extends GetxController {
   RxBool getBookingLoading = false.obs;
   RxBool cancelBookingLoading = false.obs;
   RxBool getCancelledBookingLoading = false.obs;
+  RxBool completeBookingLoading = false.obs;
+  RxBool getCompletedBookingLoading = false.obs;
   final firebaseFunctions = FirebaseFunctions();
   RxList<Map<String, dynamic>> bookingList = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> bookingListForAdmin =
       <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> cancelledBookingList =
       <Map<String, dynamic>>[].obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchAllBookings();
-  }
+  RxList<Map<String, dynamic>> completedBookingList =
+      <Map<String, dynamic>>[].obs;
 
   void increaseDays() {
     days.value++;
@@ -93,7 +92,7 @@ class BookingController extends GetxController {
         if (!context.mounted) return;
         showSuccessMessage(context, "Parking Booked Successfully!");
         fetchAllBookings();
-        Get.to(() => MyBookings());
+        Get.off(() => MyBookings());
       } else if (result == "Parking name already exists.") {
         if (!context.mounted) return;
         showOverlayError(context, "Parking name already exists.");
@@ -115,9 +114,7 @@ class BookingController extends GetxController {
       List<Map<String, dynamic>> bookings =
           await firebaseFunctions.getMyBookings();
 
-      if (bookings.isNotEmpty) {
-        bookingList.assignAll(bookings);
-      }
+      bookingList.assignAll(bookings);
     } catch (e) {
       print("error occured while getting: $e");
     } finally {
@@ -201,6 +198,55 @@ class BookingController extends GetxController {
       print("error occured while getting: $e");
     } finally {
       getCancelledBookingLoading(false);
+    }
+  }
+
+  // ----- completed ---
+
+  void completeBooking(String bookingId) async {
+    try {
+      completeBookingLoading(true);
+
+      String? res = await firebaseFunctions.completeBooking(bookingId);
+
+      if (res == null) {
+        Get.snackbar(
+          "Success",
+          "Booking Completed Successfully!",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        fetchAllBookings();
+        Get.off(() => Completed());
+      } else {
+        Get.snackbar(
+          "Error",
+          "Error occured while completing",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print("error occured while getting: $e");
+    } finally {
+      completeBookingLoading(false);
+    }
+  }
+
+  void fetchCompletedBookings() async {
+    try {
+      getCompletedBookingLoading(true);
+
+      List<Map<String, dynamic>> bookings =
+          await firebaseFunctions.getCancelledBookings();
+
+      if (bookings.isNotEmpty) {
+        completedBookingList.assignAll(bookings);
+      }
+    } catch (e) {
+      print("error occured while getting: $e");
+    } finally {
+      getCompletedBookingLoading(false);
     }
   }
 }

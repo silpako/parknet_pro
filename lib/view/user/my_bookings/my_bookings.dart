@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:parknet_pro/controller/booking_controller.dart';
 import 'package:parknet_pro/custome_widget/cancel_confirmation_popup.dart';
+import 'package:parknet_pro/custome_widget/complete_popup.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 
 class MyBookings extends StatelessWidget {
@@ -11,7 +12,7 @@ class MyBookings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BookingController controller = Get.put(BookingController());
+    final BookingController controller = Get.find<BookingController>();
     controller.fetchAllBookings();
 
     return Scaffold(
@@ -80,7 +81,7 @@ class MyBookings extends StatelessWidget {
                         blurRadius: 4,
                         spreadRadius: 2,
                         offset: const Offset(0, 2),
-                        color: AppColors.primaryColor,
+                        color: AppColors.primaryColor.withOpacity(0.2),
                       ),
                     ],
                   ),
@@ -91,11 +92,13 @@ class MyBookings extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            booking['parkingName'] ?? '',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                          Expanded(
+                            child: Text(
+                              booking['parkingName'] ?? '',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                           _buildStatusChip(booking['status'] ?? ''),
@@ -131,47 +134,83 @@ class MyBookings extends StatelessWidget {
                         "${booking['totalAmount']}",
                       ),
 
-                      Obx(() {
-                        return SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            onPressed:
-                                controller.cancelBookingLoading.value
-                                    ? null
-                                    : () {
-                                      showCancelConfirmationDialog(
-                                        context,
-                                        booking['id'],
-                                      );
-                                    },
+                      const SizedBox(height: 16),
 
-                            child:
-                                controller.cancelBookingLoading.value
-                                    ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                    : const Text(
-                                      "Cancel Booking",
-                                      style: TextStyle(
-                                        color: AppColors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                      // ✅ Button Row (only if active)
+                      if (booking['status'] == 'active') ...[
+                        Obx(() {
+                          return Row(
+                            children: [
+                              // Cancel Button
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
                                     ),
-                          ),
-                        );
-                      }),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  onPressed:
+                                      controller.cancelBookingLoading.value
+                                          ? null
+                                          : () {
+                                            showCancelConfirmationDialog(
+                                              context,
+                                              booking['id'],
+                                            );
+                                          },
+                                  child:
+                                      controller.cancelBookingLoading.value
+                                          ? const SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                          : const Text(
+                                            "Cancel",
+                                            style: TextStyle(
+                                              color: AppColors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+
+                              // Complete Button
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    showCompleteConfirmationDialog(context, booking['id']);
+                                  },
+                                  child: const Text(
+                                    "Complete",
+                                    style: TextStyle(
+                                      color: AppColors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+                      ],
                     ],
                   ),
                 );
@@ -220,7 +259,13 @@ class MyBookings extends StatelessWidget {
         Icon(icon, size: 20, color: Colors.grey.shade700),
         const SizedBox(width: 8),
         Text("$label: ", style: const TextStyle(fontWeight: FontWeight.w500)),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.w400)),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.w400),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       ],
     );
   }
