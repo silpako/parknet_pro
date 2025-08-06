@@ -144,7 +144,7 @@ class FirebaseFunctions {
     required String slotTime,
     required int totalDays,
     required String vehicleNumber,
-    required int totalAmount,
+    required double totalAmount,
   }) async {
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -190,7 +190,10 @@ class FirebaseFunctions {
   Future<List<Map<String, dynamic>>> getAllBookingsForAdmin() async {
     try {
       final snapshot =
-          await FirebaseFirestore.instance.collection('bookings').get();
+          await FirebaseFirestore.instance
+              .collection('bookings')
+              .where('status', isEqualTo: 'active')
+              .get();
 
       return snapshot.docs.map((doc) {
         final data = doc.data();
@@ -198,7 +201,7 @@ class FirebaseFunctions {
         return data;
       }).toList();
     } catch (e) {
-      print("error while fetching bookings:- $e");
+      print("error while fetching bookings: $e");
       return [];
     }
   }
@@ -321,6 +324,57 @@ class FirebaseFunctions {
     } catch (e) {
       print("Error while fetching completed bookings: $e");
       return [];
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchDashboardCounts() async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      final totalParkingsSnap = await firestore.collection('parkings').get();
+      final totalParkings = totalParkingsSnap.size;
+
+      final activeBookingsSnap =
+          await firestore
+              .collection('bookings')
+              .where('status', isEqualTo: 'active')
+              .get();
+      final currentlyParked = activeBookingsSnap.size;
+
+      final cancelledBookingsSnap =
+          await firestore
+              .collection('bookings')
+              .where('status', isEqualTo: 'cancelled')
+              .get();
+      final cancelledBookings = cancelledBookingsSnap.size;
+
+      final completedBookingsSnap =
+          await firestore
+              .collection('bookings')
+              .where('status', isEqualTo: 'completed')
+              .get();
+      double totalRevenue = 0.0;
+      for (final doc in completedBookingsSnap.docs) {
+        final data = doc.data();
+        final amount = data['totalAmount'];
+        if (amount is int || amount is double) {
+          totalRevenue += (amount as num).toDouble();
+        }
+      }
+      return {
+        'totalParkings': totalParkings,
+        'currentlyParked': currentlyParked,
+        'cancelledBookings': cancelledBookings,
+        'totalRevenue': totalRevenue,
+      };
+    } catch (e) {
+      print("error occured while fetching the counts:- $e");
+      return {
+        'totalParkings': 0,
+        'currentlyParked': 0,
+        'cancelledBookings': 0,
+        'totalRevenue': 0.0,
+      };
     }
   }
 }

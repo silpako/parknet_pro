@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parknet_pro/controller/booking_controller.dart';
 import 'package:parknet_pro/controller/customer_controller.dart';
+import 'package:parknet_pro/controller/homepage_controller.dart';
 import 'package:parknet_pro/controller/parking_controller.dart';
 import 'package:parknet_pro/controller/splash_controller.dart';
 import 'package:parknet_pro/view/admin/admin_homepage.dart';
@@ -28,6 +29,7 @@ void main() async {
   Get.put(BookingController());
   Get.put(ParkingController());
   Get.put(CustomerController());
+  Get.put(HomepageController());
 
   runApp(const MyApp());
 }
