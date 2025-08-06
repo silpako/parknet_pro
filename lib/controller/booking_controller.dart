@@ -10,8 +10,8 @@ import 'package:parknet_pro/view/user/my_bookings/my_bookings.dart';
 class BookingController extends GetxController {
   RxInt days = 1.obs;
   Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
-  final int pricePerDay = 50;
-  RxInt totalPrice = 50.obs;
+  RxDouble pricePerDay = 0.0.obs;
+  RxDouble totalPrice = 0.0.obs;
   RxBool isLoading = false.obs;
   RxBool getBookingForAdminLoading = false.obs;
   RxBool getBookingLoading = false.obs;
@@ -28,6 +28,14 @@ class BookingController extends GetxController {
   RxList<Map<String, dynamic>> completedBookingList =
       <Map<String, dynamic>>[].obs;
 
+  void assignValues(double val) {
+    selectedDate = Rx<DateTime?>(null);
+    days.value = 1;
+    updateTotalPrice();
+    totalPrice.value = val;
+    pricePerDay.value = val;
+  }
+
   void increaseDays() {
     days.value++;
     updateTotalPrice();
@@ -38,11 +46,6 @@ class BookingController extends GetxController {
       days.value--;
       updateTotalPrice();
     }
-  }
-
-  void resetDays() {
-    days.value = 1;
-    updateTotalPrice();
   }
 
   void setDate(DateTime date) {

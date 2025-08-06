@@ -24,12 +24,13 @@ class BookNowPage extends StatefulWidget {
 
 class _BookNowPageState extends State<BookNowPage> {
   final BookingController bookingController = Get.find<BookingController>();
+  
   late TextEditingController vehicleController;
 
   @override
   void initState() {
     super.initState();
-    bookingController.resetDays();
+    bookingController.assignValues(widget.amount);
     vehicleController = TextEditingController();
   }
 
