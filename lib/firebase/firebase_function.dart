@@ -251,4 +251,23 @@ class FirebaseFunctions {
       return [];
     }
   }
+
+  Future<List<Map<String, dynamic>>> getAllCancelledBookingsForAdmin() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('bookings')
+              .where('status', isEqualTo: 'cancelled')
+              .get();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    } catch (e) {
+      print("Error while fetching all cancelled bookings (Admin): $e");
+      return [];
+    }
+  }
 }

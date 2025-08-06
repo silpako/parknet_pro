@@ -1,11 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:parknet_pro/controller/booking_controller.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
+import 'package:intl/intl.dart';
 
 class SingleCancelledParkingTile extends StatelessWidget {
-  const SingleCancelledParkingTile({super.key});
+  final int index;
+  const SingleCancelledParkingTile({
+    super.key,
+    required this.index,
+    required Map<String, dynamic> data,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final BookingController controller = Get.find<BookingController>();
+    final bookings = controller.bookingListForAdmin[index];
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       elevation: 3,
@@ -19,7 +31,6 @@ class SingleCancelledParkingTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // ❌ Cancelled Icon
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -31,39 +42,44 @@ class SingleCancelledParkingTile extends StatelessWidget {
 
             const SizedBox(width: 16),
 
-            // Vehicle and location details
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    "KL-11-CD-5678",
-                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                    bookings['vehicleNumber'] ?? '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
-                    "Infopark Parking - Kakkanad",
-                    style: TextStyle(fontSize: 13, color: Colors.grey),
+                    "${bookings['parkingName'] ?? ''}",
+                    style: const TextStyle(fontSize: 13, color: AppColors.grey),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
-                    "Cancelled on: 15 July 2025, 04:45 PM",
+                    "Started at: ${bookings['slotTime'] ?? ''}",
                     style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "Cancelled on: ${DateFormat('dd MMM yyyy').format((bookings['bookingDate'] as Timestamp).toDate())}",
+                    style: const TextStyle(fontSize: 12, color: AppColors.grey),
                   ),
                 ],
               ),
             ),
-
-            // ❗ Cancelled label
             Column(
               children: const [
-                Icon(Icons.error_outline, color: Colors.red, size: 22),
+                Icon(Icons.error_outline, color: AppColors.red, size: 22),
                 SizedBox(height: 4),
                 Text(
                   "Cancelled",
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.red,
+                    color: AppColors.red,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
