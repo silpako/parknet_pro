@@ -14,18 +14,30 @@ class SplashController extends GetxController {
   }
 
   void _initSplash() async {
-  await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
 
-  final user = FirebaseAuth.instance.currentUser;
-  final isAdminLoggedIn = box.read("isAdminLoggedIn") ?? false;
+    final user = FirebaseAuth.instance.currentUser;
+    final isAdminLoggedIn = box.read("isAdminLoggedIn") ?? false;
 
-  if (user != null) {
-    Get.offAll(() => const UserHomepage());
-  } else if (isAdminLoggedIn) {
-    Get.offAll(() => const AdminHomepage());
-  } else {
-    Get.offAll(() => const SignInScreen());
+    if (user != null) {
+      Get.offAll(() => const UserHomepage());
+    } else if (isAdminLoggedIn) {
+      Get.offAll(() => const AdminHomepage());
+    } else {
+      Get.offAll(() => const SignInScreen());
+    }
   }
 }
 
-}
+
+
+// void _initSplash() async {
+//     await Future.delayed(const Duration(seconds: 3));
+
+//     final user = FirebaseAuth.instance.currentUser;
+//     if (user != null) {
+//       Get.offAll(() => const UserHomepage());
+//     } else {
+//       Get.offAll(() => const SignInScreen());
+//     }
+//   }
