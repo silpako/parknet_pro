@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parknet_pro/controller/homepage_controller.dart';
+import 'package:parknet_pro/controller/booking_controller.dart';
 import 'package:parknet_pro/custome_widget/logout_popup.dart';
 import 'package:parknet_pro/utils/app_colors.dart';
 import 'package:parknet_pro/view/admin/cancelled_parking/cancelled_parking_main.dart';
@@ -16,6 +17,14 @@ class AdminHomepage extends StatefulWidget {
 }
 
 class _AdminHomepageState extends State<AdminHomepage> {
+  final bookingController = Get.put(BookingController());
+
+  @override
+  void initState() {
+    super.initState();
+    bookingController.fetchAllCancelledBookingsForAdmin();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;

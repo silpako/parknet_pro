@@ -19,7 +19,10 @@ class BookingController extends GetxController {
   RxBool getCancelledBookingLoading = false.obs;
   RxBool completeBookingLoading = false.obs;
   RxBool getCompletedBookingLoading = false.obs;
+  RxBool getCancelledBookingForAdminLoading = false.obs;
   final firebaseFunctions = FirebaseFunctions();
+  RxList<Map<String, dynamic>> cancelledBookingListForAdmin =
+      <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> bookingList = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> bookingListForAdmin =
       <Map<String, dynamic>>[].obs;
@@ -250,6 +253,21 @@ class BookingController extends GetxController {
       print("error occured while getting: $e");
     } finally {
       getCompletedBookingLoading(false);
+    }
+  }
+
+  void fetchAllCancelledBookingsForAdmin() async {
+    try {
+      getCancelledBookingForAdminLoading(true);
+
+      List<Map<String, dynamic>> bookings =
+          await firebaseFunctions.getAllCancelledBookingsForAdmin();
+
+      cancelledBookingListForAdmin.assignAll(bookings);
+    } catch (e) {
+      print("Error occurred while fetching cancelled bookings for admin: $e");
+    } finally {
+      getCancelledBookingForAdminLoading(false);
     }
   }
 }
