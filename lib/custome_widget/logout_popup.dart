@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:parknet_pro/view/signin_screen.dart';
 
 void showLogoutDialog(BuildContext context) {
@@ -44,7 +45,9 @@ void showLogoutDialog(BuildContext context) {
               TextButton(
                 onPressed: () async {
                   try {
+                    final box = GetStorage();
                     await FirebaseAuth.instance.signOut();
+                    box.remove("isAdminLoggedIn");
                     Get.offAll(() => const SignInScreen());
                   } catch (e) {
                     Get.back();

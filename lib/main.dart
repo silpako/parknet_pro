@@ -25,7 +25,7 @@ void main() async {
     ),
   );
   User? user = FirebaseAuth.instance.currentUser;
-  Get.lazyPut(() => SplashController());
+  Get.put(SplashController());
   Get.put(BookingController());
   Get.put(ParkingController());
   Get.put(CustomerController());
@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const SignInScreen(),
+      home: const SplashScreen(),
     );
   }
 }

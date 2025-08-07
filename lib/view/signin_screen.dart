@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:parknet_pro/custome_widget/custome_textformfiled.dart';
 import 'package:parknet_pro/custome_widget/ouline_and_greenbutton.dart';
 import 'package:parknet_pro/firebase/firebase_function.dart';
@@ -23,7 +24,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController passwordcontroller = TextEditingController();
   bool isRememberMe = false;
   final _formKey = GlobalKey<FormState>();
-  bool isLoading = false; // 👈 loader flag
+  bool isLoading = false;
+  final box = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +131,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             if (emailcontroller.text == "admin@gmail.com" &&
                                 passwordcontroller.text == "123456") {
                               setState(() => isLoading = false);
+                              box.write("isAdminLoggedIn", true);
                               Get.offAll(() => const AdminHomepage());
                             } else {
                               FirebaseFunctions()
