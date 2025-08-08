@@ -23,6 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isTermsAccepted = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -146,45 +147,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
 
                   const SizedBox(height: 30),
-                  GreenButton(
-                    text: 'Sign Up',
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        if (!isTermsAccepted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Please accept the Terms & Conditions',
-                              ),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          return;
-                        }
+                  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : GreenButton(
+                        text: 'Sign Up',
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            if (!isTermsAccepted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Please accept the Terms & Conditions',
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
 
-                        String name = nameController.text.trim();
-                        String email = emailController.text.trim();
-                        String pass = passwordController.text.trim();
+                            setState(() => isLoading = true);
 
-                        FirebaseFunctions()
-                            .registerUser(
-                              name: name,
-                              email: email,
-                              password: pass,
-                            )
-                            .then((response) {
-                              if (response == null) {
-                                Get.to(() => const SignInScreen());
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(response)),
-                                );
-                              }
-                            });
-                      }
-                    },
-                  ),
+                            String name = nameController.text.trim();
+                            String email = emailController.text.trim();
+                            String pass = passwordController.text.trim();
 
+                            FirebaseFunctions()
+                                .registerUser(
+                                  name: name,
+                                  email: email,
+                                  password: pass,
+                                )
+                                .then((response) {
+                                  setState(
+                                    () => isLoading = false,
+                                  ); // Stop loader
+
+                                  if (response == null) {
+                                    Get.to(() => const SignInScreen());
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(response)),
+                                    );
+                                  }
+                                });
+                          }
+                        },
+                      ),
                   const SizedBox(height: 20),
                   Center(
                     child: RichText(

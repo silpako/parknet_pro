@@ -65,7 +65,7 @@ class _UserHomepageState extends State<UserHomepage> {
               onTap: () {
                 showLogoutDialog(context);
               },
-              child: const Icon(Icons.person_add_alt, color: AppColors.white),
+              child: const Icon(Icons.logout, color: AppColors.white),
             ),
           ],
         ),
