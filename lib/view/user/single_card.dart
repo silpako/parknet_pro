@@ -120,29 +120,56 @@ class SingleCard extends StatelessWidget {
                       "Rs. ${parking['amount'] ?? ''}",
                       style: TextStyle(fontSize: 14),
                     ),
+
+                    if (parking['availableSlots'] != null)
+                      Text(
+                        parking['availableSlots'] > 0
+                            ? "${parking['availableSlots']} slots available"
+                            : "No slots available",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color:
+                              parking['availableSlots'] > 0
+                                  ? AppColors
+                                      .green // show green if available
+                                  : AppColors.red, // red if none
+                        ),
+                      ),
                   ],
                 ),
                 GestureDetector(
-                  onTap: () {
-                    Get.to(
-                      () => BookNowPage(
-                        parkingId: parking['id'] ?? '',
-                        parkingName: parking['parkingName'] ?? '',
-                        amount: parking['amount'] ?? '',
-                        location: parking['location'] ?? '',
-                      ),
-                    );
-                  },
+                  onTap:
+                      (parking['availableSlots'] != null &&
+                              parking['availableSlots'] > 0)
+                          ? () {
+                            Get.to(
+                              () => BookNowPage(
+                                parkingId: parking['id'] ?? '',
+                                parkingName: parking['parkingName'] ?? '',
+                                amount: parking['amount'] ?? '',
+                                location: parking['location'] ?? '',
+                              ),
+                            );
+                          }
+                          : null, // ❌ disables tap if no slots
                   child: Container(
                     height: 44,
                     width: 150,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor,
+                      color:
+                          (parking['availableSlots'] != null &&
+                                  parking['availableSlots'] > 0)
+                              ? AppColors.primaryColor
+                              : AppColors.grey, // greyed out if no slots
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Center(
                       child: Text(
-                        "Book Now",
+                        (parking['availableSlots'] != null &&
+                                parking['availableSlots'] > 0)
+                            ? "Book Now"
+                            : "Unavailable",
                         style: TextStyle(
                           color: AppColors.white,
                           fontWeight: FontWeight.bold,

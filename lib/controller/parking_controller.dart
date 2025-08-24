@@ -47,7 +47,7 @@ class ParkingController extends GetxController {
         if (!context.mounted) return;
         showSuccessMessage(context, "Parking Created Successfully!");
         fetchAllParkings();
-        Get.to(() => ParkingMain());
+        Get.off(() => ParkingMain());
       } else if (result == "Parking name already exists.") {
         if (!context.mounted) return;
         showOverlayError(context, "Parking name already exists.");

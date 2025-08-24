@@ -8,7 +8,6 @@ class CustomerController extends GetxController {
 
   @override
   void onInit() {
-    print("------------- customer controller iit");
     super.onInit();
     fetchAllParkings();
   }

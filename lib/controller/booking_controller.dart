@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parknet_pro/controller/customer_controller.dart';
 import 'package:parknet_pro/error_response/error_message.dart';
 import 'package:parknet_pro/error_response/success_message.dart';
 import 'package:parknet_pro/firebase/firebase_function.dart';
@@ -98,6 +99,9 @@ class BookingController extends GetxController {
         if (!context.mounted) return;
         showSuccessMessage(context, "Parking Booked Successfully!");
         fetchAllBookings();
+        final customerController = Get.find<CustomerController>();
+        customerController.fetchAllParkings();
+
         Get.off(() => MyBookings());
       } else if (result == "Parking name already exists.") {
         if (!context.mounted) return;

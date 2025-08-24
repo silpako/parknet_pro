@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:parknet_pro/controller/customer_controller.dart';
 import 'package:parknet_pro/custome_widget/custome_textformfiled.dart';
 import 'package:parknet_pro/custome_widget/ouline_and_greenbutton.dart';
 import 'package:parknet_pro/firebase/firebase_function.dart';
@@ -124,7 +125,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ? const Center(child: CircularProgressIndicator())
                       : GreenButton(
                         text: 'Sign In',
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             setState(() => isLoading = true);
 
@@ -145,6 +146,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                     ); // Stop loader
 
                                     if (response == null) {
+                                      final customerController = Get.put(
+                                        CustomerController(),
+                                      );
+                                      customerController.fetchAllParkings();
+
                                       Get.offAll(() => const UserHomepage());
                                     } else {
                                       ScaffoldMessenger.of(
