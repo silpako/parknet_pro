@@ -26,11 +26,13 @@ class ParkingController extends GetxController {
     location,
     amountString,
     fineAmountString,
+    numberOfSlots,
   ) async {
     try {
       isLoading(true);
       double amount = double.parse(amountString);
       double fineAmount = double.parse(fineAmountString);
+      int slots = int.parse(numberOfSlots);
 
       final result = await firebaseFunctions.postParking(
         parkingName: parkingName,
@@ -38,6 +40,7 @@ class ParkingController extends GetxController {
         location: location,
         amount: amount,
         fineAmount: fineAmount,
+        noOfSlot: slots,
       );
 
       if (result == null) {
@@ -119,9 +122,12 @@ class ParkingController extends GetxController {
     String location,
     String amount,
     String fineAmount,
+    String noOfSlots,
   ) async {
     try {
       isEditingLoading(true);
+
+      int slots = int.parse(noOfSlots);
 
       final result = await firebaseFunctions.updateParking(
         id,
@@ -130,6 +136,7 @@ class ParkingController extends GetxController {
         location,
         amount,
         fineAmount,
+        slots,
       );
 
       if (result == null) {

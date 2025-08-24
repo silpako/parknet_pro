@@ -126,7 +126,7 @@ class SingleCard extends StatelessWidget {
                   onTap: () {
                     Get.to(
                       () => BookNowPage(
-                        parkingId: parking['parkingId'] ?? '',
+                        parkingId: parking['id'] ?? '',
                         parkingName: parking['parkingName'] ?? '',
                         amount: parking['amount'] ?? '',
                         location: parking['location'] ?? '',

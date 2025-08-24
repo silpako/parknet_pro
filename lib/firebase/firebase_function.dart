@@ -52,6 +52,7 @@ class FirebaseFunctions {
     required String location,
     required double amount,
     required double fineAmount,
+    required int noOfSlot, // ✅ new field
   }) async {
     try {
       // Check if parkingName already exists
@@ -75,6 +76,7 @@ class FirebaseFunctions {
         'location': location,
         'amount': amount,
         'fineAmount': fineAmount,
+        'noOfSlot': noOfSlot, // ✅ storing number of slots
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -94,9 +96,34 @@ class FirebaseFunctions {
               .orderBy('createdAt', descending: true)
               .get();
 
-      return snapshot.docs.map((doc) {
-        return {'id': doc.id, ...doc.data()};
-      }).toList();
+      List<Map<String, dynamic>> parkings = [];
+
+      for (var doc in snapshot.docs) {
+        final data = doc.data();
+        final parkingId = doc.id;
+
+        // Count active bookings
+        final bookedSnap =
+            await FirebaseFirestore.instance
+                .collection('bookings')
+                .where('parkingId', isEqualTo: parkingId)
+                .where('status', isEqualTo: 'active')
+                .get();
+
+        final bookedCount = bookedSnap.docs.length;
+        final totalSlots = data['noOfSlot'] ?? 0;
+        final availableSlots = totalSlots - bookedCount;
+
+        parkings.add({
+          'id': parkingId,
+          ...data,
+          'noOfSlot': data['noOfSlot'] ?? 0,
+          'bookedSlots': bookedCount,
+          'availableSlots': availableSlots,
+        });
+      }
+
+      return parkings;
     } catch (e) {
       print("getParking error -> $e");
       return [];
@@ -120,6 +147,7 @@ class FirebaseFunctions {
     String location,
     String amount,
     String fineAmount,
+    int noOfSlot,
   ) async {
     try {
       await FirebaseFirestore.instance.collection('parkings').doc(id).update({
@@ -128,6 +156,7 @@ class FirebaseFunctions {
         'location': location,
         'amount': double.tryParse(amount) ?? 0,
         'fineAmount': double.tryParse(fineAmount) ?? 0,
+        'noOfSlot': noOfSlot,
         'updatedAt': FieldValue.serverTimestamp(),
       });
       return null;
@@ -148,23 +177,55 @@ class FirebaseFunctions {
   }) async {
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) return "User not logged in";
+      if (parkingId.isEmpty) return "Invalid parking ID";
 
-      await FirebaseFirestore.instance.collection('bookings').add({
-        'userId': uid,
-        'parkingId': parkingId,
-        'parkingName': parkingName,
-        'bookingDate': Timestamp.now(),
-        'totalDays': totalDays,
-        'vehicleNumber': vehicleNumber,
-        'totalAmount': totalAmount,
-        'slotTime': slotTime,
-        'status': 'active',
+      final firestore = FirebaseFirestore.instance;
+
+      return await firestore.runTransaction((transaction) async {
+        final parkingRef = firestore.collection('parkings').doc(parkingId);
+        final parkingSnap = await transaction.get(parkingRef);
+
+        if (!parkingSnap.exists) return "Parking not found";
+
+        final parkingData = parkingSnap.data()!;
+        final totalSlots = parkingData['noOfSlot'] ?? 0;
+
+        // Count active bookings
+        final bookingSnap =
+            await firestore
+                .collection('bookings')
+                .where('parkingId', isEqualTo: parkingId)
+                .where('status', isEqualTo: 'active')
+                .get();
+
+        final bookedCount = bookingSnap.docs.length;
+        final availableSlots = totalSlots - bookedCount;
+
+        if (availableSlots <= 0) {
+          return "No slots available for this parking"; // ✅ return message
+        }
+
+        // Add booking
+        final bookingRef = firestore.collection('bookings').doc();
+        transaction.set(bookingRef, {
+          'id': bookingRef.id,
+          'userId': uid,
+          'parkingId': parkingId,
+          'parkingName': parkingName,
+          'bookingDate': FieldValue.serverTimestamp(),
+          'totalDays': totalDays,
+          'vehicleNumber': vehicleNumber,
+          'totalAmount': totalAmount,
+          'slotTime': slotTime,
+          'status': 'active',
+        });
+
+        return null; // success
       });
-
-      return null;
     } catch (e) {
       print("error while add booking:- $e");
-      return e.toString();
+      return e.toString(); // return actual error message
     }
   }
 
@@ -266,6 +327,29 @@ class FirebaseFunctions {
     } catch (e) {
       print("Error completing booking: $e");
       return e.toString();
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getCompletedBookings() async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) return [];
+
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('bookings')
+              .where('userId', isEqualTo: uid)
+              .where('status', isEqualTo: 'completed')
+              .get();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    } catch (e) {
+      print("Error while fetching completed bookings: $e");
+      return [];
     }
   }
 

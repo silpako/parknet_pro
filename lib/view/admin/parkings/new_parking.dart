@@ -20,6 +20,7 @@ class _NewParkingState extends State<NewParking> {
   late TextEditingController locationController;
   late TextEditingController priceController;
   late TextEditingController fineController;
+  late TextEditingController slotController;
 
   @override
   void initState() {
@@ -39,6 +40,9 @@ class _NewParkingState extends State<NewParking> {
     fineController = TextEditingController(
       text: widget.parking?['fineAmount']?.toString() ?? '',
     );
+    slotController = TextEditingController(
+      text: widget.parking?['noOfSlot']?.toString() ?? '',
+    );
   }
 
   @override
@@ -49,6 +53,7 @@ class _NewParkingState extends State<NewParking> {
     locationController.dispose();
     priceController.dispose();
     fineController.dispose();
+    slotController.dispose();
   }
 
   @override
@@ -113,6 +118,14 @@ class _NewParkingState extends State<NewParking> {
                 controller: fineController,
                 keyboardType: TextInputType.number,
               ),
+              const SizedBox(height: 16),
+              buildTextField(
+                label: 'Number of Slots',
+                icon: Icons.event_seat,
+                controller: slotController,
+                keyboardType: TextInputType.number,
+              ),
+
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
@@ -148,6 +161,7 @@ class _NewParkingState extends State<NewParking> {
                                 locationController.text,
                                 priceController.text,
                                 fineController.text,
+                                slotController.text,
                               );
                             } else {
                               controller.addParking(
@@ -157,6 +171,7 @@ class _NewParkingState extends State<NewParking> {
                                 locationController.text,
                                 priceController.text,
                                 fineController.text,
+                                slotController.text,
                               );
                             }
                           }

@@ -101,6 +101,10 @@ class Completed extends StatelessWidget {
                               "⏰ ${booking['slotTime'] ?? ''}",
                               style: TextStyle(color: Colors.grey[700]),
                             ),
+                            Text(
+                              "🚘 ${booking['vehicleNumber'] ?? ''}",
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
                           ],
                         ),
                       ),

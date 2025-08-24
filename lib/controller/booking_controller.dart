@@ -104,7 +104,7 @@ class BookingController extends GetxController {
         showOverlayError(context, "Parking name already exists.");
       } else {
         if (!context.mounted) return;
-        showOverlayError(context, "Can't create parking.");
+        showOverlayError(context, result);
       }
     } catch (e) {
       print('Unexpected error: $e');
@@ -244,7 +244,7 @@ class BookingController extends GetxController {
       getCompletedBookingLoading(true);
 
       List<Map<String, dynamic>> bookings =
-          await firebaseFunctions.getCancelledBookings();
+          await firebaseFunctions.getCompletedBookings();
 
       if (bookings.isNotEmpty) {
         completedBookingList.assignAll(bookings);

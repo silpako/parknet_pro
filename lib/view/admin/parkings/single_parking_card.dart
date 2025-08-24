@@ -95,6 +95,23 @@ class SingleParkingCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
 
+            Row(
+              children: [
+                const Icon(Icons.local_parking, size: 16, color: Colors.black),
+                const SizedBox(width: 4),
+                Text(
+                  "Total: ${parking['noOfSlot']} | "
+                  "Booked: ${parking['bookedSlots']} | "
+                  "Available: ${parking['availableSlots']}",
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+
             /// Actions
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
